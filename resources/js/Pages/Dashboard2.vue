@@ -4,7 +4,7 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 
 <template>
     <AppLayout>
-        <h1 class="section-title">Dashboard1</h1>
+        <h1 class="section-title">Dashboard2</h1>
         <p>Stisla + Inertia + Vue berhasil</p>
     </AppLayout>
 </template>

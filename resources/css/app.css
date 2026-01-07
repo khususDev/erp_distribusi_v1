@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* Sidebar normal */
+.main-sidebar .dropdown-menu {
+    padding-left: 10px;
+}
+
+/* Sidebar mini */
+body.sidebar-mini .main-sidebar .dropdown-menu {
+    position: static !important;
+    padding-left: 20px;
+    margin-top: 6px;
+}

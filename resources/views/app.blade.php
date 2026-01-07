@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/dist/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/dist/assets/css/fontawesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="/dist/assets/css/style.css">
     <link rel="stylesheet" href="/dist/assets/css/components.css">
 
@@ -26,11 +26,11 @@
 </body>
 
 <script src="/dist/assets/js/jquery.min.js"></script>
-<script src="/dist/assets/js/popper.js"></script>
+<script src="/dist/assets/js/popper.min.js"></script>
 <script src="/dist/assets/js/bootstrap.min.js"></script>
 <script src="/dist/assets/js/jquery.nicescroll.min.js"></script>
 <script src="/dist/assets/js/moment.min.js"></script>
-<script src="/dist/assets/js/dist.js"></script>
+{{-- <script src="/dist/assets/js/dist.js"></script> --}}
 <script src="/dist/assets/js/scripts.js"></script>
 <script src="/dist/assets/js/custom.js"></script>
 
