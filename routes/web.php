@@ -25,9 +25,9 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/mst_department', [DepartmentController::class, 'index'])->name('department');
-    Route::get('/mst_product', [DepartmentController::class, 'index'])->name('product');
-    Route::get('/mng_user', [UserController::class, 'index'])->name('user');
+    Route::get('/mst_department', [DepartmentController::class, 'index'])->name('mst_department');
+    Route::get('/mst_product', [DepartmentController::class, 'index'])->name('mst_product');
+    Route::get('/mng_user', [UserController::class, 'index'])->name('mng_user');
 });
 
 require __DIR__ . '/auth.php';
