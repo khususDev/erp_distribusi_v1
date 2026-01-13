@@ -14,7 +14,8 @@ class Menu extends Model
         'parent_id',
         'order',
         'is_active',
-        'is_sidebar'
+        'is_sidebar',
+        'permission',
     ];
 
     public function children()
@@ -25,4 +26,11 @@ class Menu extends Model
             ->with('children'); // recursive (future-proof)
     }
 
+    public function users()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'menu_permission'
+        );
+    }
 }

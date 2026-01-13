@@ -3,32 +3,33 @@
 namespace App\Services;
 
 use App\Models\Menu;
+use Illuminate\Support\Facades\Auth;
 
 // app/Services/MenuService.php
 class MenuService
 {
-    public static function sidebar()
+    public static function getSidebar()
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         return Menu::with('children')
             ->whereNull('parent_id')
             ->where('is_active', 1)
-            ->where('is_sidebar', 1)
             ->orderBy('order')
             ->get()
             ->filter(function ($menu) use ($user) {
 
-                // parent tanpa permission → cek child
-                if (!$menu->permission) {
-                    $menu->children = $menu->children->filter(
-                        fn($child) =>
-                        !$child->permission || $user->can($child->permission)
-                    );
-                    return $menu->children->isNotEmpty();
+                // 🔹 SINGLE MENU (Dashboard, dll)
+                if ($menu->route) {
+                    return !$menu->permission || $user->can($menu->permission);
                 }
 
-                return $user->can($menu->permission);
+                // 🔹 PARENT MENU (tanpa route)
+                $menu->children = $menu->children->filter(function ($child) use ($user) {
+                    return !$child->permission || $user->can($child->permission);
+                });
+
+                return $menu->children->isNotEmpty();
             })
             ->values();
     }

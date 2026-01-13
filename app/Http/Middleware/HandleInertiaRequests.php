@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Menu;
+use App\Services\MenuService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Middleware;
@@ -33,19 +34,37 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
+
             'auth' => [
                 'user' => $request->user(),
             ],
-            'menus' => function () {
+
+            'menus' => function () use ($request) {
+                $user = $request->user();
+
+                if (!$user) {
+                    return [];
+                }
+
                 return Menu::whereNull('parent_id')
                     ->where('is_active', 1)
+                    ->whereHas(
+                        'users',
+                        fn($q) =>
+                        $q->where('users.id', $user->id)
+                    )
+                    ->with(['children' => function ($q) use ($user) {
+                        $q->where('is_active', 1)
+                            ->whereHas(
+                                'users',
+                                fn($q) =>
+                                $q->where('users.id', $user->id)
+                            )
+                            ->orderBy('order');
+                    }])
                     ->orderBy('order')
-                    ->with('children')
                     ->get();
             },
-
-            'activeMenu' => fn() =>
-                Menu::where('route', Route::currentRouteName())->first(),
         ];
     }
 }
