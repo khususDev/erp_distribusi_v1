@@ -1,20 +1,22 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Management;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 use App\Models\Menu;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class UserMenuController extends Controller
+class MenuPermissionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Inertia::render('Users/Index', [
+        return Inertia::render('Management/MenuPermission/Index', [
             'users' => User::select('id', 'name', 'email')->get(),
         ]);
     }
@@ -30,7 +32,7 @@ class UserMenuController extends Controller
             ->pluck('menus.id')
             ->toArray();
 
-        return Inertia::render('Users/MenuPermission', [
+        return Inertia::render('Management/MenuPermission/Edit', [
             'user' => $user,
             'menus' => $menus,
             'userMenuIds' => $userMenuIds,
