@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Menu;
+use App\Models\Management\Menu;
 use Illuminate\Support\Facades\Auth;
 
 // app/Services/MenuService.php

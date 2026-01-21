@@ -26,62 +26,11 @@
                     <ul class="sidebar-menu">
                         <li class="menu-header">Menu</li>
 
-                        <li
+                        <SidebarItem
                             v-for="menu in menus"
                             :key="menu.id"
-                            :class="[
-                                menu.children?.length ? 'dropdown' : '',
-                                isActiveParent(menu) ? 'active' : '',
-                            ]"
-                        >
-                            <!-- 🔹 MENU TANPA CHILD -->
-                            <a
-                                v-if="
-                                    !menu.children || menu.children.length === 0
-                                "
-                                :href="route(menu.route)"
-                                class="nav-link"
-                            >
-                                <i :class="menu.icon"></i>
-                                <span>{{ menu.name }}</span>
-                            </a>
-
-                            <!-- 🔹 MENU DENGAN CHILD -->
-                            <a
-                                v-else
-                                href="#"
-                                class="nav-link has-dropdown"
-                                @click.prevent="toggleMenu(menu.id)"
-                            >
-                                <i :class="menu.icon"></i>
-                                <span>{{ menu.name }}</span>
-                            </a>
-
-                            <!-- 🔹 SUB MENU -->
-                            <ul
-                                v-if="menu.children?.length"
-                                class="dropdown-menu"
-                                :style="{
-                                    display:
-                                        openedMenu === menu.id
-                                            ? 'block'
-                                            : 'none',
-                                }"
-                            >
-                                <li
-                                    v-for="child in menu.children"
-                                    :key="child.id"
-                                    :class="{ active: isActive(child) }"
-                                >
-                                    <a
-                                        :href="route(child.route)"
-                                        class="nav-link"
-                                    >
-                                        {{ child.name }}
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                            :menu="menu"
+                        />
                     </ul>
                 </aside>
             </div>
@@ -99,6 +48,7 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
 import { usePage } from "@inertiajs/vue3";
+import SidebarItem from "@/Components/SidebarItem.vue";
 
 const page = usePage();
 const menus = page.props.menus;
@@ -126,7 +76,7 @@ watch(
             }
         });
     },
-    { immediate: true }
+    { immediate: true },
 );
 
 onMounted(() => {
@@ -150,7 +100,7 @@ const isActive = (menu) => {
 // parent active jika salah satu child aktif
 const isActiveParent = (menu) => {
     return menu.children?.some(
-        (child) => child.id === page.props.activeMenu?.id
+        (child) => child.id === page.props.activeMenu?.id,
     );
 };
 </script>

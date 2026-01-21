@@ -3,10 +3,14 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Management\MenuPermissionController;
 use App\Http\Controllers\Management\UserController;
-use App\Http\Controllers\Master\General\DepartmentController as GeneralDepartmentController;
-use App\Http\Controllers\Master\General\ProductController as GeneralProductController;
+use App\Http\Controllers\Management\RoleController;
+use App\Http\Controllers\Master\Organization\DepartmentController as OrganizationDepartmentController;
+use App\Http\Controllers\Master\Organization\LocationController as OrganizationLocationController;
+use App\Http\Controllers\Master\Inventory\UomController as InventoryUomController;
+use App\Http\Controllers\Master\Finance\CurrencyController as FinanceCurrencyController;
+use App\Http\Controllers\Master\Finance\PaymentMethodController as FinancePaymentMethodController;
+use App\Http\Controllers\Master\Finance\TaxController as FinanceTaxController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RoleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -36,12 +40,35 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'menu.permission'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/mst_grl_department', [GeneralDepartmentController::class, 'index'])->name('mst_grl_department');
-    Route::post('/mst_grl_department', [GeneralDepartmentController::class, 'store']);
-    Route::put('/mst_grl_department/{department}', [GeneralDepartmentController::class, 'update']);
-    Route::delete('/mst_grl_department/{department}', [GeneralDepartmentController::class, 'destroy']);
+    Route::get('/mst_grl_department', [OrganizationDepartmentController::class, 'index'])->name('mst_grl_department');
+    Route::post('/mst_grl_department', [OrganizationDepartmentController::class, 'store']);
+    Route::put('/mst_grl_department/{department}', [OrganizationDepartmentController::class, 'update']);
+    Route::delete('/mst_grl_department/{department}', [OrganizationDepartmentController::class, 'destroy']);
 
-    Route::get('/mst_product', [GeneralProductController::class, 'index'])->name('mst_product');
+    Route::get('/mst_grl_location', [OrganizationLocationController::class, 'index'])->name('mst_grl_location');
+    Route::post('/mst_grl_location', [OrganizationLocationController::class, 'store']);
+    Route::put('/mst_grl_location/{location}', [OrganizationLocationController::class, 'update']);
+    Route::delete('/mst_grl_location/{location}', [OrganizationLocationController::class, 'destroy']);
+
+    Route::get('/mst_grl_uom', [InventoryUomController::class, 'index'])->name('mst_grl_uom');
+    Route::post('/mst_grl_uom', [InventoryUomController::class, 'store']);
+    Route::put('/mst_grl_uom/{uom}', [InventoryUomController::class, 'update']);
+    Route::delete('/mst_grl_uom/{uom}', [InventoryUomController::class, 'destroy']);
+
+    Route::get('/mst_grl_currency', [FinanceCurrencyController::class, 'index'])->name('mst_grl_currency');
+    Route::post('/mst_grl_currency', [FinanceCurrencyController::class, 'store']);
+    Route::put('/mst_grl_currency/{currency}', [FinanceCurrencyController::class, 'update']);
+    Route::delete('/mst_grl_currency/{currency}', [FinanceCurrencyController::class, 'destroy']);
+
+    Route::get('/mst_grl_payment_method', [FinancePaymentMethodController::class, 'index'])->name('mst_grl_payment_method');
+    Route::post('/mst_grl_payment_method', [FinancePaymentMethodController::class, 'store']);
+    Route::put('/mst_grl_payment_method/{paymentMethod}', [FinancePaymentMethodController::class, 'update']);
+    Route::delete('/mst_grl_payment_method/{paymentMethod}', [FinancePaymentMethodController::class, 'destroy']);
+
+    Route::get('/mst_grl_tax', [FinanceTaxController::class, 'index'])->name('mst_grl_tax');
+    Route::post('/mst_grl_tax', [FinanceTaxController::class, 'store']);
+    Route::put('/mst_grl_tax/{tax}', [FinanceTaxController::class, 'update']);
+    Route::delete('/mst_grl_tax/{tax}', [FinanceTaxController::class, 'destroy']);
 
     Route::get('/mng_user', [UserController::class, 'index'])->name('mng_user');
 

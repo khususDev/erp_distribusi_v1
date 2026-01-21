@@ -19,6 +19,38 @@
 CREATE DATABASE IF NOT EXISTS `db_erp` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `db_erp`;
 
+-- Dumping structure for table db_erp.currency
+CREATE TABLE IF NOT EXISTS `currency` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `symbol` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `currency_code_unique` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table db_erp.currency: ~0 rows (approximately)
+INSERT INTO `currency` (`id`, `code`, `name`, `symbol`, `is_active`, `created_at`, `updated_at`) VALUES
+	(1, 'US', 'Europa', '$', 1, '2026-01-19 10:35:37', '2026-01-19 10:35:37');
+
+-- Dumping structure for table db_erp.department
+CREATE TABLE IF NOT EXISTS `department` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `department_code_unique` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table db_erp.department: ~0 rows (approximately)
+
 -- Dumping structure for table db_erp.failed_jobs
 CREATE TABLE IF NOT EXISTS `failed_jobs` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -33,6 +65,27 @@ CREATE TABLE IF NOT EXISTS `failed_jobs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table db_erp.failed_jobs: ~0 rows (approximately)
+
+-- Dumping structure for table db_erp.location
+CREATE TABLE IF NOT EXISTS `location` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` enum('BRANCH','AREA','WAREHOUSE','OFFICE') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `parent_id` bigint unsigned DEFAULT NULL,
+  `address` text COLLATE utf8mb4_unicode_ci,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `location_code_unique` (`code`),
+  KEY `location_parent_id_foreign` (`parent_id`),
+  CONSTRAINT `location_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `location` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table db_erp.location: ~2 rows (approximately)
+INSERT INTO `location` (`id`, `code`, `name`, `type`, `parent_id`, `address`, `is_active`, `created_at`, `updated_at`) VALUES
+	(1, 'asd', 'test nama', 'AREA', NULL, 'alamat', 1, '2026-01-19 09:55:58', '2026-01-19 09:57:56');
 
 -- Dumping structure for table db_erp.menus
 CREATE TABLE IF NOT EXISTS `menus` (
@@ -49,18 +102,25 @@ CREATE TABLE IF NOT EXISTS `menus` (
   PRIMARY KEY (`id`),
   KEY `menus_parent_id_foreign` (`parent_id`),
   CONSTRAINT `menus_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.menus: ~8 rows (approximately)
+-- Dumping data for table db_erp.menus: ~15 rows (approximately)
 INSERT INTO `menus` (`id`, `name`, `route`, `icon`, `parent_id`, `order`, `is_active`, `is_sidebar`, `created_at`, `updated_at`) VALUES
 	(1, 'Dashboard', 'dashboard', 'fas fa-home', NULL, 1, 1, 1, NULL, NULL),
 	(2, 'Master Data', NULL, 'fas fa-file', NULL, 2, 1, 1, NULL, NULL),
 	(3, 'Management', NULL, 'fas fa-id-badge', NULL, 3, 1, 1, NULL, NULL),
-	(4, 'Department', 'mst_department', NULL, 2, 1, 1, 1, NULL, NULL),
+	(4, 'Department', 'mst_grl_department', NULL, 20, 2, 1, 1, NULL, NULL),
 	(5, 'Product', 'mst_product', NULL, 2, 2, 1, 1, NULL, NULL),
 	(6, 'User', 'mng_user', NULL, 3, 1, 1, 1, NULL, NULL),
-	(7, 'Menus', 'mng_menu', NULL, 3, 2, 1, 1, NULL, NULL),
-	(8, 'Roles', 'mng_role', NULL, 3, 3, 1, 1, NULL, NULL);
+	(7, 'Menu Permission', 'mng_menupermission', NULL, 3, 2, 1, 1, NULL, NULL),
+	(8, 'Roles', 'mng_role', NULL, 3, 3, 1, 1, NULL, NULL),
+	(9, 'Location', 'mst_grl_location', NULL, 20, 3, 1, 1, NULL, NULL),
+	(10, 'Uom', 'mst_grl_uom', NULL, 2, 3, 1, 1, NULL, NULL),
+	(11, 'Currency', 'mst_grl_currency', NULL, 2, 4, 1, 1, NULL, NULL),
+	(12, 'Payment Method', 'mst_grl_payment_method', NULL, 2, 5, 1, 1, NULL, NULL),
+	(13, 'Tax', 'mst_grl_tax', NULL, 2, 6, 1, 1, NULL, NULL),
+	(20, 'Organization', NULL, 'fas fa-id-badge', 2, 1, 1, 1, NULL, NULL),
+	(21, 'Company', 'mst_grl_department', NULL, 20, 1, 1, 1, NULL, NULL);
 
 -- Dumping structure for table db_erp.menu_permission
 CREATE TABLE IF NOT EXISTS `menu_permission` (
@@ -68,9 +128,9 @@ CREATE TABLE IF NOT EXISTS `menu_permission` (
   `menu_id` bigint unsigned NOT NULL,
   `user_id` bigint unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.menu_permission: ~7 rows (approximately)
+-- Dumping data for table db_erp.menu_permission: ~13 rows (approximately)
 INSERT INTO `menu_permission` (`id`, `menu_id`, `user_id`) VALUES
 	(1, 1, 1),
 	(2, 2, 1),
@@ -78,7 +138,13 @@ INSERT INTO `menu_permission` (`id`, `menu_id`, `user_id`) VALUES
 	(8, 3, 1),
 	(9, 6, 1),
 	(10, 7, 1),
-	(11, 8, 1);
+	(11, 8, 1),
+	(12, 9, 1),
+	(13, 10, 1),
+	(14, 11, 1),
+	(15, 12, 1),
+	(16, 13, 1),
+	(17, 20, 1);
 
 -- Dumping structure for table db_erp.migrations
 CREATE TABLE IF NOT EXISTS `migrations` (
@@ -86,9 +152,9 @@ CREATE TABLE IF NOT EXISTS `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.migrations: ~11 rows (approximately)
+-- Dumping data for table db_erp.migrations: ~15 rows (approximately)
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 	(1, '2014_10_12_000000_create_users_table', 1),
 	(2, '2014_10_12_100000_create_password_reset_tokens_table', 1),
@@ -100,7 +166,13 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 	(8, '2026_01_07_164051_add_permission_to_menus_table', 3),
 	(9, '2026_01_11_064604_create_menu_permission_table', 4),
 	(10, '2026_01_12_081158_create_roles_table', 5),
-	(11, '2026_01_12_081246_create_role_user_table', 5);
+	(11, '2026_01_12_081246_create_role_user_table', 5),
+	(12, '2026_01_17_202500_create_department_table', 6),
+	(13, '2026_01_19_163707_create_location_table', 7),
+	(14, '2026_01_19_171043_create_uom_table', 8),
+	(15, '2026_01_19_172510_create_currency_table', 9),
+	(16, '2026_01_19_173917_create_payment_method_table', 10),
+	(17, '2026_01_19_175331_create_tax_table', 11);
 
 -- Dumping structure for table db_erp.model_has_permissions
 CREATE TABLE IF NOT EXISTS `model_has_permissions` (
@@ -135,6 +207,21 @@ CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table db_erp.password_reset_tokens: ~0 rows (approximately)
+
+-- Dumping structure for table db_erp.payment_method
+CREATE TABLE IF NOT EXISTS `payment_method` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `payment_method_code_unique` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table db_erp.payment_method: ~0 rows (approximately)
 
 -- Dumping structure for table db_erp.permissions
 CREATE TABLE IF NOT EXISTS `permissions` (
@@ -184,11 +271,12 @@ CREATE TABLE IF NOT EXISTS `roles` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `roles_code_unique` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.roles: ~1 rows (approximately)
+-- Dumping data for table db_erp.roles: ~0 rows (approximately)
 INSERT INTO `roles` (`id`, `name`, `code`, `description`, `is_active`, `created_at`, `updated_at`) VALUES
-	(3, 'test', 'test', 'test', 1, '2026-01-12 04:34:31', '2026-01-12 04:34:31');
+	(3, 'test', 'test', 'test', 1, '2026-01-12 04:34:31', '2026-01-12 04:34:31'),
+	(4, 'test2', 't2', 'twest', 1, '2026-01-17 10:49:04', '2026-01-17 10:49:04');
 
 -- Dumping structure for table db_erp.role_has_permissions
 CREATE TABLE IF NOT EXISTS `role_has_permissions` (
@@ -215,6 +303,39 @@ CREATE TABLE IF NOT EXISTS `role_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table db_erp.role_user: ~0 rows (approximately)
+
+-- Dumping structure for table db_erp.tax
+CREATE TABLE IF NOT EXISTS `tax` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `rate` decimal(5,2) NOT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `taxes_code_unique` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table db_erp.tax: ~0 rows (approximately)
+INSERT INTO `tax` (`id`, `code`, `name`, `rate`, `description`, `is_active`, `created_at`, `updated_at`) VALUES
+	(1, 'PPN11', 'PPN 11 %', 11.00, 'dfsdfsd', 1, '2026-01-19 11:04:38', '2026-01-19 11:04:38');
+
+-- Dumping structure for table db_erp.uom
+CREATE TABLE IF NOT EXISTS `uom` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uom_code_unique` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table db_erp.uom: ~0 rows (approximately)
 
 -- Dumping structure for table db_erp.users
 CREATE TABLE IF NOT EXISTS `users` (

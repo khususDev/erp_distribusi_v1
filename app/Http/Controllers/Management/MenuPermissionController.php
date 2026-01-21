@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Management;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\Menu;
-use App\Models\User;
+use App\Models\Management\Menu;
+use App\Models\Management\User;
 use Inertia\Inertia;
 
 class MenuPermissionController extends Controller
