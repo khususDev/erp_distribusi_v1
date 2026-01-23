@@ -1,5 +1,36 @@
+/* Custom Title */
 h6 {
     font-size: 1.5rem;
     font-weight: bold;
     color: #252121;
+}
+
+/* Custom Sidebar Menu */
+.erp-submenu {
+    max-height: 0;
+    overflow: hidden;
+    padding-left: 22px;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition:
+        max-height 0.35s ease,
+        opacity 0.25s ease,
+        transform 0.25s ease;
+}
+
+.erp-submenu.open {
+    max-height: 1000px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* child link */
+.erp-submenu li a {
+    padding-left: 10px !important;
+    font-size: 13px;
+}
+
+/* deeper nesting */
+.erp-submenu .erp-submenu {
+    padding-left: 15px;
 }

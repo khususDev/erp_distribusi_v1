@@ -22,11 +22,7 @@
         </a>
 
         <!-- CHILDREN -->
-        <ul
-            v-if="hasChildren"
-            class="dropdown-menu"
-            :style="{ display: opened ? 'block' : 'none' }"
-        >
+        <ul v-if="hasChildren" class="erp-submenu" :class="{ open: opened }">
             <SidebarItem
                 v-for="child in menu.children"
                 :key="child.id"
