@@ -1,22 +1,25 @@
 <?php
 
-namespace App\Http\Controllers\Master\Organization;
+namespace App\Http\Controllers\Master\Inventory;
 
 use App\Http\Controllers\Controller;
-use App\Models\Master\Organization\Company;
+use App\Models\Master\Inventory\Category;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class CompanyController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Inertia::render('Master/Organization/Company/Index', [
-            'companies' => Company::orderBy('name')->get(),
-        ]);
+        return Inertia::render(
+            'Master/Inventory/Category/Index',
+            [
+                'categories' => Category::orderBy('name')->get(),
+            ]
+        );
     }
 
     /**
@@ -34,12 +37,12 @@ class CompanyController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'code' => 'required|unique:company,code',
+            'code' => 'required|unique:product_category,code',
         ]);
 
-        Company::create($request->all());
+        Category::create($request->all());
 
-        return back()->with('success', 'Company berhasil ditambahkan');
+        return back()->with('success', 'Kategori produk berhasil ditambahkan');
     }
 
     /**
@@ -61,26 +64,27 @@ class CompanyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Company $company)
+    public function update(Request $request, Category $category)
     {
         $request->validate([
             'name' => 'required',
-            'code' => 'required|unique:company,code,' . $company->id,
+            'code' =>
+            'required|unique:product_category,code,' .
+                $category->id,
         ]);
 
-        $company->update($request->all());
+        $category->update($request->all());
 
-        return back()->with('success', 'Company berhasil diperbarui');
+        return back()->with('success', 'Kategori produk berhasil diperbarui');
     }
-
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Company $company)
+    public function destroy(Category $category)
     {
-        $company->delete();
+        $category->delete();
 
-        return back()->with('success', 'Company berhasil dihapus');
+        return back()->with('success', 'Kategori produk berhasil dihapus');
     }
 }

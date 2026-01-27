@@ -4,10 +4,11 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Management\MenuPermissionController;
 use App\Http\Controllers\Management\UserController;
 use App\Http\Controllers\Management\RoleController;
-use App\Http\Controllers\Master\Organization\CompanyController;
+use App\Http\Controllers\Master\Organization\CompanyController as OrganizationCompanyController;
 use App\Http\Controllers\Master\Organization\DepartmentController as OrganizationDepartmentController;
 use App\Http\Controllers\Master\Organization\LocationController as OrganizationLocationController;
 use App\Http\Controllers\Master\Inventory\UomController as InventoryUomController;
+use App\Http\Controllers\Master\Inventory\CategoryController as InventoryCategoryController;
 use App\Http\Controllers\Master\Finance\CurrencyController as FinanceCurrencyController;
 use App\Http\Controllers\Master\Finance\PaymentMethodController as FinancePaymentMethodController;
 use App\Http\Controllers\Master\Finance\TaxController as FinanceTaxController;
@@ -37,16 +38,21 @@ Route::middleware('auth')->group(function () {
 //     });
 // });
 
-Route::prefix('master/organization')->group(function () {
-    Route::get('/company', [CompanyController::class, 'index'])->name('mst_org_company');
-    Route::post('/company', [CompanyController::class, 'store']);
-    Route::put('/company/{company}', [CompanyController::class, 'update']);
-    Route::delete('/company/{company}', [CompanyController::class, 'destroy']);
-});
+// Route::prefix('master/organization')->group(function () {
+//     Route::get('/company', [CompanyController::class, 'index'])->name('mst_org_company');
+//     Route::post('/company', [CompanyController::class, 'store']);
+//     Route::put('/company/{company}', [CompanyController::class, 'update']);
+//     Route::delete('/company/{company}', [CompanyController::class, 'destroy']);
+// });
 
 
 Route::middleware(['auth', 'menu.permission'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/mst_grl_company', [OrganizationCompanyController::class, 'index'])->name('mst_grl_company');
+    Route::post('/mst_grl_company', [OrganizationCompanyController::class, 'store']);
+    Route::put('/mst_grl_company/{company}', [OrganizationCompanyController::class, 'update']);
+    Route::delete('/mst_grl_company/{company}', [OrganizationCompanyController::class, 'destroy']);
 
     Route::get('/mst_grl_department', [OrganizationDepartmentController::class, 'index'])->name('mst_grl_department');
     Route::post('/mst_grl_department', [OrganizationDepartmentController::class, 'store']);
@@ -58,10 +64,15 @@ Route::middleware(['auth', 'menu.permission'])->group(function () {
     Route::put('/mst_grl_location/{location}', [OrganizationLocationController::class, 'update']);
     Route::delete('/mst_grl_location/{location}', [OrganizationLocationController::class, 'destroy']);
 
-    Route::get('/mst_grl_uom', [InventoryUomController::class, 'index'])->name('mst_grl_uom');
-    Route::post('/mst_grl_uom', [InventoryUomController::class, 'store']);
-    Route::put('/mst_grl_uom/{uom}', [InventoryUomController::class, 'update']);
-    Route::delete('/mst_grl_uom/{uom}', [InventoryUomController::class, 'destroy']);
+    Route::get('/mst_inv_uom', [InventoryUomController::class, 'index'])->name('mst_inv_uom');
+    Route::post('/mst_inv_uom', [InventoryUomController::class, 'store']);
+    Route::put('/mst_inv_uom/{uom}', [InventoryUomController::class, 'update']);
+    Route::delete('/mst_inv_uom/{uom}', [InventoryUomController::class, 'destroy']);
+
+    Route::get('/mst_inv_category', [InventoryCategoryController::class, 'index'])->name('mst_inv_category');
+    Route::post('/mst_inv_category', [InventoryCategoryController::class, 'store']);
+    Route::put('/mst_inv_category/{category}', [InventoryCategoryController::class, 'update']);
+    Route::delete('/mst_inv_category/{category}', [InventoryCategoryController::class, 'destroy']);
 
     Route::get('/mst_grl_currency', [FinanceCurrencyController::class, 'index'])->name('mst_grl_currency');
     Route::post('/mst_grl_currency', [FinanceCurrencyController::class, 'store']);

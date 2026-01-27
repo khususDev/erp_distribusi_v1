@@ -4,7 +4,7 @@ import { ref } from "vue";
 import { router } from "@inertiajs/vue3";
 
 const props = defineProps({
-    companies: Array,
+    categories: Array,
 });
 
 const showModal = ref(false);
@@ -14,9 +14,7 @@ const form = ref({
     id: null,
     name: "",
     code: "",
-    phone: "",
-    email: "",
-    address: "",
+    description: "",
     is_active: true,
 });
 
@@ -26,17 +24,15 @@ const openCreate = () => {
         id: null,
         name: "",
         code: "",
-        phone: "",
-        email: "",
-        address: "",
+        description: "",
         is_active: true,
     };
     showModal.value = true;
 };
 
-const openEdit = (company) => {
+const openEdit = (category) => {
     isEdit.value = true;
-    form.value = { ...company };
+    form.value = { ...category };
     showModal.value = true;
 };
 
@@ -44,21 +40,21 @@ const close = () => {
     showModal.value = false;
 };
 
-function submit() {
+const submit = () => {
     if (isEdit.value) {
-        router.put(`/mst_grl_company/${form.value.id}`, form.value, {
+        router.put(`/mst_inv_category/${form.value.id}`, form.value, {
             onSuccess: () => (showModal.value = false),
         });
     } else {
-        router.post("/mst_grl_company", form.value, {
+        router.post("/mst_inv_category", form.value, {
             onSuccess: () => (showModal.value = false),
         });
     }
-}
+};
 
-const destroy = (company) => {
-    if (confirm("Hapus company ini?")) {
-        router.delete(`/mst_grl_company/${company.id}`);
+const destroy = (category) => {
+    if (confirm(`Hapus Category "${category.name}" ?`)) {
+        router.delete(`/mst_inv_category/${category.id}`);
     }
 };
 </script>
@@ -69,7 +65,7 @@ const destroy = (company) => {
             <div class="card">
                 <div class="card-header">
                     <button class="btn btn-primary" @click="openCreate">
-                        <i class="fas fa-plus"></i> Tambah Company
+                        <i class="fas fa-plus"></i> Tambah Kategori
                     </button>
                 </div>
 
@@ -79,19 +75,22 @@ const destroy = (company) => {
                             <tr>
                                 <th>Nama</th>
                                 <th>Code</th>
-                                <th>Email</th>
+                                <th>Deskripsi</th>
                                 <th>Status</th>
                                 <th width="150">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="company in companies" :key="company.id">
-                                <td>{{ company.name }}</td>
-                                <td>{{ company.code }}</td>
-                                <td>{{ company.email ?? "-" }}</td>
+                            <tr
+                                v-for="category in categories"
+                                :key="category.id"
+                            >
+                                <td>{{ category.name }}</td>
+                                <td>{{ category.code }}</td>
+                                <td>{{ category.description ?? "-" }}</td>
                                 <td>
                                     <span
-                                        v-if="company.is_active"
+                                        v-if="category.is_active"
                                         class="badge badge-success"
                                     >
                                         Aktif
@@ -103,22 +102,22 @@ const destroy = (company) => {
                                 <td>
                                     <button
                                         class="btn btn-sm btn-warning mr-1"
-                                        @click="openEdit(company)"
+                                        @click="openEdit(category)"
                                     >
                                         <i class="fas fa-edit"></i>
                                     </button>
                                     <button
                                         class="btn btn-sm btn-danger"
-                                        @click="destroy(company)"
+                                        @click="destroy(category)"
                                     >
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>
                             </tr>
 
-                            <tr v-if="companies.length === 0">
+                            <tr v-if="categories.length === 0">
                                 <td colspan="5" class="text-center text-muted">
-                                    Data company belum tersedia
+                                    Data kategori belum tersedia
                                 </td>
                             </tr>
                         </tbody>
@@ -132,9 +131,9 @@ const destroy = (company) => {
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">
-                                {{ isEdit ? "Edit Company" : "Tambah Company" }}
+                                {{ isEdit ? "Edit" : "Tambah" }} Kategori Produk
                             </h5>
-                            <button type="button" class="close" @click="close">
+                            <button class="close" @click="close">
                                 <span>&times;</span>
                             </button>
                         </div>
@@ -158,25 +157,9 @@ const destroy = (company) => {
                             </div>
 
                             <div class="form-group">
-                                <label>Email</label>
-                                <input
-                                    v-model="form.email"
-                                    class="form-control"
-                                />
-                            </div>
-
-                            <div class="form-group">
-                                <label>Phone</label>
-                                <input
-                                    v-model="form.phone"
-                                    class="form-control"
-                                />
-                            </div>
-
-                            <div class="form-group">
-                                <label>Address</label>
+                                <label>Deskripsi</label>
                                 <textarea
-                                    v-model="form.address"
+                                    v-model="form.description"
                                     class="form-control"
                                 ></textarea>
                             </div>
