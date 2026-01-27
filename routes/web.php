@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Management\MenuPermissionController;
 use App\Http\Controllers\Management\UserController;
 use App\Http\Controllers\Management\RoleController;
+use App\Http\Controllers\Master\Organization\CompanyController;
 use App\Http\Controllers\Master\Organization\DepartmentController as OrganizationDepartmentController;
 use App\Http\Controllers\Master\Organization\LocationController as OrganizationLocationController;
 use App\Http\Controllers\Master\Inventory\UomController as InventoryUomController;
@@ -35,6 +36,13 @@ Route::middleware('auth')->group(function () {
 //         Route::resource('departments', [GeneralDepartmentController::class, 'index'])->name('mst_gnrl');
 //     });
 // });
+
+Route::prefix('master/organization')->group(function () {
+    Route::get('/company', [CompanyController::class, 'index'])->name('mst_org_company');
+    Route::post('/company', [CompanyController::class, 'store']);
+    Route::put('/company/{company}', [CompanyController::class, 'update']);
+    Route::delete('/company/{company}', [CompanyController::class, 'destroy']);
+});
 
 
 Route::middleware(['auth', 'menu.permission'])->group(function () {
