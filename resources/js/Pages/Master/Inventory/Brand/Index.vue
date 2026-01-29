@@ -4,7 +4,7 @@ import { ref } from "vue";
 import { router } from "@inertiajs/vue3";
 
 const props = defineProps({
-    uoms: Array,
+    brands: Array,
 });
 
 const showModal = ref(false);
@@ -30,27 +30,27 @@ function openCreate() {
     showModal.value = true;
 }
 
-function openEdit(uom) {
+function openEdit(brand) {
     isEdit.value = true;
-    form.value = { ...uom };
+    form.value = { ...brand };
     showModal.value = true;
 }
 
 function submit() {
     if (isEdit.value) {
-        router.put(`/mst_inv_uom/${form.value.id}`, form.value, {
+        router.put(`/mst_inv_brand/${form.value.id}`, form.value, {
             onSuccess: () => (showModal.value = false),
         });
     } else {
-        router.post("/mst_inv_uom", form.value, {
+        router.post("/mst_inv_brand", form.value, {
             onSuccess: () => (showModal.value = false),
         });
     }
 }
 
-function destroy(uom) {
-    if (confirm(`Hapus UOM "${uom.name}" ?`)) {
-        router.delete(`/mst_inv_uom/${uom.id}`);
+function destroy(brand) {
+    if (confirm(`Hapus Brand "${brand.name}" ?`)) {
+        router.delete(`/mst_inv_brand/${brand.id}`);
     }
 }
 </script>
@@ -63,10 +63,10 @@ function destroy(uom) {
                 <div
                     class="card-header d-flex justify-content-between align-items-center p-1 pl-3 pr-3"
                 >
-                    <h6 class="section-title">Master Unit of Measure</h6>
+                    <h6 class="section-title">Master Brand</h6>
 
                     <button class="btn btn-primary btn-sm" @click="openCreate">
-                        <i class="fas fa-plus"></i> Tambah UOM
+                        <i class="fas fa-plus"></i> Tambah Brand
                     </button>
                 </div>
 
@@ -83,20 +83,20 @@ function destroy(uom) {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="uom in uoms" :key="uom.id">
-                                    <td>{{ uom.code }}</td>
-                                    <td>{{ uom.name }}</td>
-                                    <td>{{ uom.description }}</td>
+                                <tr v-for="brand in brands" :key="brand.id">
+                                    <td>{{ brand.code }}</td>
+                                    <td>{{ brand.name }}</td>
+                                    <td>{{ brand.description }}</td>
                                     <td>
                                         <span
                                             :class="
-                                                uom.is_active
+                                                brand.is_active
                                                     ? 'badge badge-success'
                                                     : 'badge badge-danger'
                                             "
                                         >
                                             {{
-                                                uom.is_active
+                                                brand.is_active
                                                     ? "Aktif"
                                                     : "Nonaktif"
                                             }}
@@ -105,25 +105,25 @@ function destroy(uom) {
                                     <td>
                                         <button
                                             class="btn btn-sm btn-warning mr-1"
-                                            @click="openEdit(uom)"
+                                            @click="openEdit(brand)"
                                         >
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <button
                                             class="btn btn-sm btn-danger"
-                                            @click="destroy(uom)"
+                                            @click="destroy(brand)"
                                         >
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
                                 </tr>
 
-                                <tr v-if="uoms.length === 0">
+                                <tr v-if="brands.length === 0">
                                     <td
                                         colspan="5"
                                         class="text-center text-muted"
                                     >
-                                        Data UOM belum tersedia
+                                        Data Brand belum tersedia
                                     </td>
                                 </tr>
                             </tbody>
@@ -144,7 +144,7 @@ function destroy(uom) {
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">
-                            {{ isEdit ? "Edit UOM" : "Tambah UOM" }}
+                            {{ isEdit ? "Edit Brand" : "Tambah Brand" }}
                         </h5>
                         <button
                             type="button"

@@ -19,6 +19,43 @@
 CREATE DATABASE IF NOT EXISTS `db_erp` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `db_erp`;
 
+-- Dumping structure for table db_erp.category
+CREATE TABLE IF NOT EXISTS `category` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `category_code_unique` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table db_erp.category: ~0 rows (approximately)
+INSERT INTO `category` (`id`, `name`, `code`, `description`, `is_active`, `created_at`, `updated_at`) VALUES
+	(2, 'test', 'tes', 'tes', 1, '2026-01-29 02:47:22', '2026-01-29 02:47:22'),
+	(3, 'MAKANAN', 'KP001', 'MAKANAN', 1, '2026-01-29 08:11:44', '2026-01-29 08:11:44');
+
+-- Dumping structure for table db_erp.company
+CREATE TABLE IF NOT EXISTS `company` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` text COLLATE utf8mb4_unicode_ci,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `company_code_unique` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table db_erp.company: ~0 rows (approximately)
+INSERT INTO `company` (`id`, `name`, `code`, `email`, `phone`, `address`, `is_active`, `created_at`, `updated_at`) VALUES
+	(2, 'asdas', 'sadasdas', 'asdas@mail.com', '09213128171', 'test', 1, '2026-01-29 02:46:18', '2026-01-29 02:46:18');
+
 -- Dumping structure for table db_erp.currency
 CREATE TABLE IF NOT EXISTS `currency` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
@@ -47,9 +84,11 @@ CREATE TABLE IF NOT EXISTS `department` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `department_code_unique` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table db_erp.department: ~0 rows (approximately)
+INSERT INTO `department` (`id`, `code`, `name`, `description`, `is_active`, `created_at`, `updated_at`) VALUES
+	(3, 'test', 'test', 'test', 1, '2026-01-29 02:46:32', '2026-01-29 02:46:32');
 
 -- Dumping structure for table db_erp.failed_jobs
 CREATE TABLE IF NOT EXISTS `failed_jobs` (
@@ -102,9 +141,9 @@ CREATE TABLE IF NOT EXISTS `menus` (
   PRIMARY KEY (`id`),
   KEY `menus_parent_id_foreign` (`parent_id`),
   CONSTRAINT `menus_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.menus: ~15 rows (approximately)
+-- Dumping data for table db_erp.menus: ~17 rows (approximately)
 INSERT INTO `menus` (`id`, `name`, `route`, `icon`, `parent_id`, `order`, `is_active`, `is_sidebar`, `created_at`, `updated_at`) VALUES
 	(1, 'Dashboard', 'dashboard', 'fas fa-home', NULL, 1, 1, 1, NULL, NULL),
 	(2, 'Master Data', NULL, 'fas fa-file', NULL, 2, 1, 1, NULL, NULL),
@@ -115,12 +154,19 @@ INSERT INTO `menus` (`id`, `name`, `route`, `icon`, `parent_id`, `order`, `is_ac
 	(7, 'Menu Permission', 'mng_menupermission', NULL, 3, 2, 1, 1, NULL, NULL),
 	(8, 'Roles', 'mng_role', NULL, 3, 3, 1, 1, NULL, NULL),
 	(9, 'Location', 'mst_grl_location', NULL, 20, 3, 1, 1, NULL, NULL),
-	(10, 'Uom', 'mst_grl_uom', NULL, 2, 3, 1, 1, NULL, NULL),
-	(11, 'Currency', 'mst_grl_currency', NULL, 2, 4, 1, 1, NULL, NULL),
-	(12, 'Payment Method', 'mst_grl_payment_method', NULL, 2, 5, 1, 1, NULL, NULL),
-	(13, 'Tax', 'mst_grl_tax', NULL, 2, 6, 1, 1, NULL, NULL),
+	(10, 'UOM', 'mst_inv_uom', NULL, 23, 1, 1, 1, NULL, NULL),
+	(11, 'Currency', 'mst_grl_currency', NULL, 28, 1, 1, 1, NULL, NULL),
+	(12, 'Payment Method', 'mst_grl_payment_method', NULL, 28, 2, 1, 1, NULL, NULL),
+	(13, 'Tax', 'mst_grl_tax', NULL, 28, 3, 1, 1, NULL, NULL),
 	(20, 'Organization', NULL, 'fas fa-id-badge', 2, 1, 1, 1, NULL, NULL),
-	(21, 'Company', 'mst_grl_department', NULL, 20, 1, 1, 1, NULL, NULL);
+	(21, 'Company', 'mst_grl_company', NULL, 20, 1, 1, 1, NULL, NULL),
+	(22, 'Product Category\r\n', 'mst_inv_category', NULL, 23, 3, 1, 1, NULL, NULL),
+	(23, 'Inventory', NULL, 'fas fa-id-badge', 2, 2, 1, 1, NULL, NULL),
+	(24, 'Brand', 'mst_inv_brand', NULL, 23, 2, 1, 1, NULL, NULL),
+	(25, 'Product', 'mst_inv_product', NULL, 23, 4, 1, 1, NULL, NULL),
+	(26, 'Warehouse', 'mst_inv_warehouse', NULL, 23, 5, 1, 1, NULL, NULL),
+	(27, 'Storage Location', 'mst_inv_storage', NULL, 23, 6, 1, 1, NULL, NULL),
+	(28, 'Finance', NULL, 'fas fa-id-badge', 2, 3, 1, 1, NULL, NULL);
 
 -- Dumping structure for table db_erp.menu_permission
 CREATE TABLE IF NOT EXISTS `menu_permission` (
@@ -128,9 +174,9 @@ CREATE TABLE IF NOT EXISTS `menu_permission` (
   `menu_id` bigint unsigned NOT NULL,
   `user_id` bigint unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.menu_permission: ~13 rows (approximately)
+-- Dumping data for table db_erp.menu_permission: ~16 rows (approximately)
 INSERT INTO `menu_permission` (`id`, `menu_id`, `user_id`) VALUES
 	(1, 1, 1),
 	(2, 2, 1),
@@ -144,7 +190,15 @@ INSERT INTO `menu_permission` (`id`, `menu_id`, `user_id`) VALUES
 	(14, 11, 1),
 	(15, 12, 1),
 	(16, 13, 1),
-	(17, 20, 1);
+	(17, 20, 1),
+	(18, 21, 1),
+	(19, 23, 1),
+	(20, 22, 1),
+	(21, 24, 1),
+	(22, 25, 1),
+	(23, 26, 1),
+	(24, 27, 1),
+	(26, 28, 1);
 
 -- Dumping structure for table db_erp.migrations
 CREATE TABLE IF NOT EXISTS `migrations` (
@@ -152,7 +206,7 @@ CREATE TABLE IF NOT EXISTS `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table db_erp.migrations: ~15 rows (approximately)
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
@@ -172,7 +226,16 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 	(14, '2026_01_19_171043_create_uom_table', 8),
 	(15, '2026_01_19_172510_create_currency_table', 9),
 	(16, '2026_01_19_173917_create_payment_method_table', 10),
-	(17, '2026_01_19_175331_create_tax_table', 11);
+	(17, '2026_01_19_175331_create_tax_table', 11),
+	(18, '2026_01_23_065706_create_companies_table', 12),
+	(19, '2026_01_27_155525_create_product_category_table', 13),
+	(20, '2026_01_27_155525_create_category_table', 14),
+	(21, '2026_01_29_093115_create_mst_brand_table', 15),
+	(22, '2026_01_29_093231_create_mst_warehouse_table', 16),
+	(23, '2026_01_29_093336_create_mst_storage_table', 17),
+	(24, '2026_01_29_094238_create_mst_brand_table', 18),
+	(25, '2026_01_29_101544_create_mst_product_table', 19),
+	(26, '2026_01_29_173237_mst_product_uom', 20);
 
 -- Dumping structure for table db_erp.model_has_permissions
 CREATE TABLE IF NOT EXISTS `model_has_permissions` (
@@ -197,6 +260,117 @@ CREATE TABLE IF NOT EXISTS `model_has_roles` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table db_erp.model_has_roles: ~2 rows (approximately)
+
+-- Dumping structure for table db_erp.mst_brand
+CREATE TABLE IF NOT EXISTS `mst_brand` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `mst_brand_code_unique` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table db_erp.mst_brand: ~0 rows (approximately)
+INSERT INTO `mst_brand` (`id`, `name`, `code`, `description`, `is_active`, `created_at`, `updated_at`) VALUES
+	(1, 'Mayora indah', 'BR001', 'PT Mayota Indah', 1, '2026-01-29 08:57:16', '2026-01-29 09:08:35');
+
+-- Dumping structure for table db_erp.mst_product
+CREATE TABLE IF NOT EXISTS `mst_product` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `barcode` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `category_id` bigint unsigned NOT NULL,
+  `brand_id` bigint unsigned DEFAULT NULL,
+  `type` enum('stock','non_stock','service') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'stock',
+  `min_stock` decimal(15,2) NOT NULL DEFAULT '0.00',
+  `max_stock` decimal(15,2) DEFAULT NULL,
+  `purchase_price` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `selling_price` decimal(18,2) NOT NULL DEFAULT '0.00',
+  `tax_id` bigint unsigned DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `mst_product_code_unique` (`code`),
+  UNIQUE KEY `mst_product_barcode_unique` (`barcode`),
+  KEY `mst_product_category_id_foreign` (`category_id`),
+  KEY `mst_product_brand_id_foreign` (`brand_id`),
+  KEY `mst_product_tax_id_foreign` (`tax_id`),
+  CONSTRAINT `mst_product_brand_id_foreign` FOREIGN KEY (`brand_id`) REFERENCES `mst_brand` (`id`),
+  CONSTRAINT `mst_product_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `category` (`id`),
+  CONSTRAINT `mst_product_tax_id_foreign` FOREIGN KEY (`tax_id`) REFERENCES `tax` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table db_erp.mst_product: ~0 rows (approximately)
+INSERT INTO `mst_product` (`id`, `code`, `name`, `barcode`, `category_id`, `brand_id`, `type`, `min_stock`, `max_stock`, `purchase_price`, `selling_price`, `tax_id`, `is_active`, `description`, `created_at`, `updated_at`) VALUES
+	(7, 'P20260001', 'BENGBENG', NULL, 3, 1, 'stock', 0.00, NULL, 0.00, 0.00, NULL, 1, NULL, '2026-01-29 10:43:23', '2026-01-29 10:43:23'),
+	(8, 'P20260002', 'BISKUIT ARDEN', NULL, 3, 1, 'stock', 0.00, NULL, 0.00, 0.00, NULL, 1, NULL, '2026-01-29 10:53:27', '2026-01-29 10:53:27');
+
+-- Dumping structure for table db_erp.mst_product_uom
+CREATE TABLE IF NOT EXISTS `mst_product_uom` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `product_id` bigint unsigned NOT NULL,
+  `uom_id` bigint unsigned NOT NULL,
+  `conversion_rate` decimal(15,4) NOT NULL DEFAULT '1.0000',
+  `is_base` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `mst_product_uom_product_id_foreign` (`product_id`),
+  KEY `mst_product_uom_uom_id_foreign` (`uom_id`),
+  CONSTRAINT `mst_product_uom_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `mst_product` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `mst_product_uom_uom_id_foreign` FOREIGN KEY (`uom_id`) REFERENCES `uom` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table db_erp.mst_product_uom: ~0 rows (approximately)
+INSERT INTO `mst_product_uom` (`id`, `product_id`, `uom_id`, `conversion_rate`, `is_base`, `created_at`, `updated_at`) VALUES
+	(1, 7, 3, 10.0000, 1, '2026-01-29 10:43:23', '2026-01-29 10:43:23'),
+	(2, 8, 5, 12.0000, 1, '2026-01-29 10:53:28', '2026-01-29 10:53:28'),
+	(3, 8, 6, 50.0000, 0, '2026-01-29 10:53:28', '2026-01-29 10:53:28');
+
+-- Dumping structure for table db_erp.mst_storage
+CREATE TABLE IF NOT EXISTS `mst_storage` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `warehouse_id` bigint unsigned NOT NULL,
+  `parent_id` bigint unsigned DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `mst_storage_code_unique` (`code`),
+  KEY `mst_storage_warehouse_id_foreign` (`warehouse_id`),
+  KEY `mst_storage_parent_id_foreign` (`parent_id`),
+  CONSTRAINT `mst_storage_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `mst_storage` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `mst_storage_warehouse_id_foreign` FOREIGN KEY (`warehouse_id`) REFERENCES `mst_warehouse` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table db_erp.mst_storage: ~0 rows (approximately)
+
+-- Dumping structure for table db_erp.mst_warehouse
+CREATE TABLE IF NOT EXISTS `mst_warehouse` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `location_id` bigint unsigned DEFAULT NULL,
+  `address` text COLLATE utf8mb4_unicode_ci,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `mst_warehouses_code_unique` (`code`),
+  KEY `mst_warehouses_location_id_foreign` (`location_id`),
+  CONSTRAINT `mst_warehouses_location_id_foreign` FOREIGN KEY (`location_id`) REFERENCES `location` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table db_erp.mst_warehouse: ~0 rows (approximately)
 
 -- Dumping structure for table db_erp.password_reset_tokens
 CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
@@ -259,6 +433,23 @@ CREATE TABLE IF NOT EXISTS `personal_access_tokens` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table db_erp.personal_access_tokens: ~0 rows (approximately)
+
+-- Dumping structure for table db_erp.product_category
+CREATE TABLE IF NOT EXISTS `product_category` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `product_category_code_unique` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table db_erp.product_category: ~0 rows (approximately)
+INSERT INTO `product_category` (`id`, `name`, `code`, `description`, `is_active`, `created_at`, `updated_at`) VALUES
+	(1, 'wew', 'we', 'ererer', 1, '2026-01-27 09:23:13', '2026-01-27 09:23:13');
 
 -- Dumping structure for table db_erp.roles
 CREATE TABLE IF NOT EXISTS `roles` (
@@ -333,9 +524,14 @@ CREATE TABLE IF NOT EXISTS `uom` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uom_code_unique` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table db_erp.uom: ~0 rows (approximately)
+INSERT INTO `uom` (`id`, `code`, `name`, `description`, `is_active`, `created_at`, `updated_at`) VALUES
+	(3, 'tes', 'tes', 'tes', 0, '2026-01-29 02:52:18', '2026-01-29 10:51:23'),
+	(4, 'PCS', 'PIECE', 'SATUAN PER ITEM', 1, '2026-01-29 10:51:06', '2026-01-29 10:51:06'),
+	(5, 'BOX', 'BOX', '1 BOX ISI 12', 1, '2026-01-29 10:52:03', '2026-01-29 10:52:03'),
+	(6, 'KG', 'KILOGRAM', 'BERAT DALAM KILO', 1, '2026-01-29 10:52:20', '2026-01-29 10:52:20');
 
 -- Dumping structure for table db_erp.users
 CREATE TABLE IF NOT EXISTS `users` (
