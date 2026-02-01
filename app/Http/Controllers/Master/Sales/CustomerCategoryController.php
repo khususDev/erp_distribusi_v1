@@ -1,23 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\Master\Inventory;
+namespace App\Http\Controllers\Master\Sales;
 
 use App\Http\Controllers\Controller;
-use App\Models\Master\Inventory\Storage;
-use App\Models\Master\Inventory\Warehouse;
+use App\Models\Master\Sales\CustomerCategory;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class StorageController extends Controller
+class CustomerCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Inertia::render('Master/Inventory/Storage/Index', [
-            'storages'   => Storage::with('warehouse')->orderBy('name')->get(),
-            'warehouses' => Warehouse::active()->orderBy('name')->get(),
+        return Inertia::render('Master/Sales/CustomerCategory/Index', [
+            'categories' => CustomerCategory::orderBy('name')->get(),
         ]);
     }
 
@@ -35,12 +33,12 @@ class StorageController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code'         => 'required',
-            'name'         => 'required',
-            'warehouse_id' => 'required',
+            'code' => 'required|unique:mst_sales_customer_category,code',
+            'name' => 'required',
         ]);
 
-        Storage::create($request->all());
+        CustomerCategory::create($request->all());
+
         return back();
     }
 
@@ -63,24 +61,23 @@ class StorageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Storage $storage)
+    public function update(Request $request, CustomerCategory $customerCategory)
     {
         $request->validate([
-            'code'         => 'required',
-            'name'         => 'required',
-            'warehouse_id' => 'required',
+            'name' => 'required',
         ]);
 
-        $storage->update($request->all());
+        $customerCategory->update($request->all());
+
         return back();
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Storage $storage)
+    public function destroy(CustomerCategory $customerCategory)
     {
-        $storage->update(['is_active' => false]);
+        $customerCategory->update(['is_active' => false]);
         return back();
     }
 }

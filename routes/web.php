@@ -16,7 +16,9 @@ use App\Http\Controllers\Master\Inventory\BrandController;
 use App\Http\Controllers\Master\Inventory\ProductController;
 use App\Http\Controllers\Master\Inventory\StorageController;
 use App\Http\Controllers\Master\Inventory\WarehouseController;
+use App\Http\Controllers\Master\Sales\CustomerCategoryController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Master\Sales\CustomerCategory;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -85,6 +87,7 @@ Route::middleware(['auth', 'menu.permission'])->group(function () {
 
     Route::get('/mst_inv_product', [ProductController::class, 'index'])->name('mst_inv_product');
     Route::get('/mst_inv_product/create', [ProductController::class, 'create']);
+    Route::get('/mst_inv_product/{product}/edit', [ProductController::class, 'edit']);
     Route::post('/mst_inv_product', [ProductController::class, 'store']);
     Route::put('/mst_inv_product/{product}', [ProductController::class, 'update']);
     Route::delete('/mst_inv_product/{product}', [ProductController::class, 'destroy']);
@@ -113,6 +116,11 @@ Route::middleware(['auth', 'menu.permission'])->group(function () {
     Route::post('/mst_grl_tax', [TaxController::class, 'store']);
     Route::put('/mst_grl_tax/{tax}', [TaxController::class, 'update']);
     Route::delete('/mst_grl_tax/{tax}', [TaxController::class, 'destroy']);
+
+    Route::get('/mst_sales_customer_category', [CustomerCategoryController::class, 'index'])->name('mst_sales_customer_category');
+    Route::post('/mst_sales_customer_category', [CustomerCategoryController::class, 'store']);
+    Route::put('/mst_sales_customer_category/{customerCategory}', [CustomerCategoryController::class, 'update']);
+    Route::delete('mst_sales_customer_category/{customerCategory}', [CustomerCategoryController::class, 'destroy']);
 
     Route::get('/mng_user', [UserController::class, 'index'])->name('mng_user');
 

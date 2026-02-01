@@ -10,13 +10,25 @@ class Warehouse extends Model
 {
     use HasFactory;
 
+    protected $table = 'mst_warehouse';
+
+    protected $fillable = [
+        'code',
+        'name',
+        'location_id',
+        'description',
+        'is_active',
+    ];
+
+    /* ================== RELATION ================== */
     public function location()
     {
         return $this->belongsTo(Location::class);
     }
 
-    public function storageLocations()
+    /* ================== SCOPE ================== */
+    public function scopeActive($query)
     {
-        return $this->hasMany(Storage::class);
+        return $query->where('is_active', true);
     }
 }

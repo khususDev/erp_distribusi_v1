@@ -76,10 +76,10 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id, Product $product)
+    public function edit(Product $product)
     {
-        return Inertia::render('Inventory/Product/Edit', [
-            'product'    => $product,
+        return Inertia::render('Master/Inventory/Product/Edit', [
+            'product'    => $product->load('uoms'),
             'categories' => Category::active()->get(),
             'brands'     => Brand::active()->get(),
             'uoms'       => Uom::active()->get(),
@@ -90,23 +90,23 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id, Product $product)
+    public function update(Request $request, Product $product)
     {
         $request->validate([
-            'code' => 'required|unique:products,code,' . $product->id,
+            'code' => 'required|unique:mst_product,code,' . $product->id,
             'name' => 'required',
         ]);
 
         $product->update($request->all());
 
-        return redirect()->route('products.index')
+        return redirect()->route('mst_inv_product')
             ->with('success', 'Product berhasil diupdate');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id, Product $product)
+    public function destroy(Product $product)
     {
         $product->update(['is_active' => false]);
 
