@@ -17,6 +17,8 @@ use App\Http\Controllers\Master\Inventory\ProductController;
 use App\Http\Controllers\Master\Inventory\StorageController;
 use App\Http\Controllers\Master\Inventory\WarehouseController;
 use App\Http\Controllers\Master\Sales\CustomerCategoryController;
+use App\Http\Controllers\Master\Sales\CustomerController;
+use App\Http\Controllers\Master\Sales\SalesmanController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Master\Sales\CustomerCategory;
 use Illuminate\Foundation\Application;
@@ -121,6 +123,16 @@ Route::middleware(['auth', 'menu.permission'])->group(function () {
     Route::post('/mst_sales_customer_category', [CustomerCategoryController::class, 'store']);
     Route::put('/mst_sales_customer_category/{customerCategory}', [CustomerCategoryController::class, 'update']);
     Route::delete('mst_sales_customer_category/{customerCategory}', [CustomerCategoryController::class, 'destroy']);
+
+    Route::get('/mst_sales_customer', [CustomerController::class, 'index'])->name('mst_sales_customer');
+    Route::post('/mst_sales_customer', [CustomerController::class, 'store']);
+    Route::put('/mst_sales_customer/{customer}', [CustomerController::class, 'update']);
+    Route::delete('mst_sales_customer/{customer}', [CustomerController::class, 'destroy']);
+
+    Route::get('/mst_sales_salesman', [SalesmanController::class, 'index'])->name('mst_sales_salesman');
+    Route::post('/mst_sales_salesman', [SalesmanController::class, 'store']);
+    Route::put('/mst_sales_salesman/{salesman}', [SalesmanController::class, 'update']);
+    Route::delete('/mst_sales_salesman/{salesman}', [SalesmanController::class, 'destroy']);
 
     Route::get('/mng_user', [UserController::class, 'index'])->name('mng_user');
 
