@@ -33,7 +33,7 @@ class PaymentMethodController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|unique:payment_method,code',
+            'code' => 'required|unique:mst_finance_payment_method,code',
             'name' => 'required',
         ]);
 
@@ -64,7 +64,7 @@ class PaymentMethodController extends Controller
     public function update(Request $request, PaymentMethod $paymentMethod)
     {
         $request->validate([
-            'code' => 'required|unique:payment_methods,code,' . $paymentMethod->id,
+            'code' => 'required|unique:mst_finance_payment_method,code,' . $paymentMethod->id,
             'name' => 'required',
         ]);
 

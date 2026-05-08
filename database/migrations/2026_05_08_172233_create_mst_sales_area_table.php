@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mst_brand', function (Blueprint $table) {
+        Schema::create('mst_sales_area', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
             $table->string('code')->unique();
+            $table->string('name');
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mst_brand');
+        Schema::dropIfExists('mst_sales_area');
     }
 };

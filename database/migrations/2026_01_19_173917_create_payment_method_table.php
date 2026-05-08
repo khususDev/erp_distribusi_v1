@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('payment_method', function (Blueprint $table) {
+        Schema::create('mst_finance_payment_method', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();   // CASH, TRANSFER, CREDIT
             $table->string('name');             // Cash, Transfer Bank

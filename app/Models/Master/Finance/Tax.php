@@ -9,7 +9,7 @@ class Tax extends Model
 {
     use HasFactory;
 
-    protected $table = 'tax';
+    protected $table = 'mst_finance_tax';
 
     protected $fillable = [
         'code',

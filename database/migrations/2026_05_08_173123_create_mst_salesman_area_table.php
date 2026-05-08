@@ -11,17 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mst_inventory_brand', function (Blueprint $table) {
+        Schema::create('mst_salesman_area', function (Blueprint $table) {
             $table->id();
-
-            $table->string('name');
-            $table->string('code')->unique();
-
-            $table->text('description')->nullable();
-
+            $table->foreignId('salesman_id')->constrained('mst_salesman')->cascadeOnDelete();
+            $table->foreignId('sales_area_id')->constrained('mst_sales_area')->cascadeOnDelete();
             $table->boolean('is_active')->default(true);
-
             $table->timestamps();
+
+            $table->unique(['salesman_id', 'sales_area_id']);
         });
     }
 
@@ -30,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mst_brand');
+        Schema::dropIfExists('mst_salesman_area');
     }
 };

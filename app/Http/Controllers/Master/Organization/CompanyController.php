@@ -34,7 +34,7 @@ class CompanyController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'code' => 'required|unique:company,code',
+            'code' => 'required|unique:mst_organization_company,code',
         ]);
 
         Company::create($request->all());
@@ -65,7 +65,7 @@ class CompanyController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'code' => 'required|unique:company,code,' . $company->id,
+            'code' => 'required|unique:mst_organization_company,code,' . $company->id,
         ]);
 
         $company->update($request->all());

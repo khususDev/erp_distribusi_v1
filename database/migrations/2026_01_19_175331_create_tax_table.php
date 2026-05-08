@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tax', function (Blueprint $table) {
+        Schema::create('mst_finance_tax', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();   // PPN11, PPN12
             $table->string('name');             // PPN 11%

@@ -33,7 +33,7 @@ class LocationController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|unique:location,code',
+            'code' => 'required|unique:mst_organization_location,code',
             'name' => 'required',
             'type' => 'required',
         ]);
@@ -65,7 +65,7 @@ class LocationController extends Controller
     public function update(Request $request, Location $location)
     {
         $request->validate([
-            'code' => 'required|unique:location,code,' . $location->id,
+            'code' => 'required|unique:mst_organization_location,code,' . $location->id,
             'name' => 'required',
             'type' => 'required',
         ]);

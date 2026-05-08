@@ -9,9 +9,8 @@ class Storage extends Model
 {
     use HasFactory;
 
-    use HasFactory;
 
-    protected $table = 'mst_storage';
+    protected $table = 'mst_inventory_storage';
 
     protected $fillable = [
         'code',

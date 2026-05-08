@@ -9,7 +9,7 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $table = 'category';
+    protected $table = 'mst_inventory_product_category';
     protected $fillable = [
         'name',
         'code',

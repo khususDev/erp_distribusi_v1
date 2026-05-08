@@ -9,7 +9,7 @@ class Company extends Model
 {
     use HasFactory;
 
-    protected $table = 'company';
+    protected $table = 'mst_organization_company';
 
     protected $fillable = [
         'name',

@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\Master\Finance;
+namespace App\Http\Controllers\Master\Sales;
 
 use App\Http\Controllers\Controller;
-use App\Models\Master\Finance\Currency;
+use App\Models\Master\Sales\Area;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class CurrencyController extends Controller
+class AreaController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Inertia::render('Master/Finance/Currency/Index', [
-            'currencies' => Currency::orderBy('code')->get(),
+        return Inertia::render('Master/Sales/Area/Index', [
+            'areas' => Area::orderBy('name')->get(),
         ]);
     }
 
@@ -33,14 +33,13 @@ class CurrencyController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|unique:currency,code',
+            'code' => 'required|unique:mst_sales_area,code',
             'name' => 'required',
-            'symbol' => 'required',
         ]);
 
-        Currency::create($request->all());
+        Area::create($request->all());
 
-        return back()->with('success', 'Currency berhasil ditambahkan');
+        return back()->with('success', 'Area berhasil ditambahkan');
     }
 
     /**
@@ -62,25 +61,23 @@ class CurrencyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Currency $currency)
+    public function update(Request $request, string $id)
     {
+        $area = Area::findOrFail($id);
+
         $request->validate([
-            'code' => 'required|unique:mst_finance_currency,code',
             'name' => 'required',
-            'symbol' => 'required',
         ]);
 
-        $currency->update($request->all());
-
-        return back()->with('success', 'Currency berhasil diperbarui');
+        $area->update($request->all());
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Currency $currency)
+    public function destroy(string $id)
     {
-        $currency->delete();
-        return back()->with('success', 'Currency berhasil dihapus');
+        $area = Area::findOrFail($id);
+        $area->update(['is_active' => false]);
     }
 }

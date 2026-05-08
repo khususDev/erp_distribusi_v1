@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('location', function (Blueprint $table) {
+        Schema::create('mst_organization_location', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
             $table->string('name');
             $table->enum('type', ['BRANCH', 'AREA', 'WAREHOUSE', 'OFFICE']);
             $table->foreignId('parent_id')->nullable()
-                ->constrained('location')->nullOnDelete();
+                ->constrained('mst_organization_location')->nullOnDelete();
             $table->text('address')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();

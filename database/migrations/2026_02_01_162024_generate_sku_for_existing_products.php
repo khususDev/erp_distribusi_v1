@@ -12,10 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $products = DB::table('mst_product')->get();
+        $products = DB::table('mst_inventory_product')->get();
 
         foreach ($products as $product) {
-            DB::table('mst_product')
+            DB::table('mst_inventory_product')
                 ->where('id', $product->id)
                 ->update([
                     'sku' => 'SKU-' . str_pad($product->id, 6, '0', STR_PAD_LEFT),

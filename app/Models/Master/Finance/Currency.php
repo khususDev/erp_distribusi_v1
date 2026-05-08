@@ -9,7 +9,7 @@ class Currency extends Model
 {
     use HasFactory;
 
-    protected $table = 'currency';
+    protected $table = 'mst_finance_currency';
 
     protected $fillable = [
         'code',

@@ -35,14 +35,14 @@ class WarehouseController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code'        => 'required|unique:mst_warehouse,code',
+            'code'        => 'required|unique:mst_inventory_warehouse,code',
             'name'        => 'required',
             'location_id' => 'required',
         ]);
 
         Warehouse::create($request->all());
 
-        return back();
+        return back()->with('success', 'Warehouse berhasil ditambahkan');
     }
 
     /**
@@ -67,14 +67,14 @@ class WarehouseController extends Controller
     public function update(Request $request, Warehouse $warehouse)
     {
         $request->validate([
-            'code'        => 'required|unique:mst_warehouse,code,' . $warehouse->id,
+            'code'        => 'required|unique:mst_inventory_warehouse,code,' . $warehouse->id,
             'name'        => 'required',
             'location_id' => 'required',
         ]);
 
         $warehouse->update($request->all());
 
-        return back();
+        return back()->with('success', 'Warehouse berhasil diperbarui');
     }
 
     /**
@@ -83,6 +83,6 @@ class WarehouseController extends Controller
     public function destroy(Warehouse $warehouse)
     {
         $warehouse->update(['is_active' => false]);
-        return back();
+        return back()->with('success', 'Warehouse berhasil dinonaktifkan');
     }
 }

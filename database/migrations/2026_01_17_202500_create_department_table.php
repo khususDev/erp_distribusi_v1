@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('department', function (Blueprint $table) {
+        Schema::create('mst_organization_department', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
             $table->string('name');

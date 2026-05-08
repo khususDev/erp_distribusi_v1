@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('currency', function (Blueprint $table) {
+        Schema::create('mst_finance_currency', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();   // IDR, USD, EUR
             $table->string('name');             // Rupiah, Dollar

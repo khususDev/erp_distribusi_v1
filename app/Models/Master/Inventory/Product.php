@@ -10,7 +10,7 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $table = 'mst_product';
+    protected $table = 'mst_inventory_product';
 
     protected $fillable = [
         'code',

@@ -11,19 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mst_warehouse', function (Blueprint $table) {
+        Schema::create('mst_finance_payment_term', function (Blueprint $table) {
             $table->id();
 
-            $table->string('name');
             $table->string('code')->unique();
+            $table->string('name');
 
-            // relasi organisasi
-            $table->foreignId('location_id')
-                ->nullable()
-                ->constrained('location')
-                ->nullOnDelete();
+            $table->integer('days')->default(0);
 
-            $table->text('address')->nullable();
+            $table->text('description')->nullable();
 
             $table->boolean('is_active')->default(true);
 
@@ -36,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mst_warehouse');
+        Schema::dropIfExists('mst_finance_payment_term');
     }
 };

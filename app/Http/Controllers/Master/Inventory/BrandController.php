@@ -33,7 +33,7 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|unique:mst_brand,code',
+            'code' => 'required|unique:mst_inventory_brand,code',
             'name' => 'required',
         ]);
 
@@ -65,7 +65,7 @@ class BrandController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'code' => 'required|unique:mst_brand,code,' . $brand->id,
+            'code' => 'required|unique:mst_inventory_brand,code,' . $brand->id,
         ]);
 
         $brand->update($request->all());

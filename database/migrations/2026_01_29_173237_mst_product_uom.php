@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mst_product_uom', function (Blueprint $table) {
+        Schema::create('mst_inventory_product_uom', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained('mst_product')->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained('mst_inventory_product')->cascadeOnDelete();
             $table->foreignId('uom_id')->constrained('uom');
             $table->decimal('conversion_rate', 15, 4)->default(1);
             $table->boolean('is_base')->default(false);

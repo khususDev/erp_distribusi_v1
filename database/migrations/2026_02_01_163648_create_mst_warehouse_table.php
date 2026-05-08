@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mst_warehouse', function (Blueprint $table) {
+        Schema::create('mst_inventory_warehouse', function (Blueprint $table) {
             $table->id();
             $table->string('code', 30)->unique();
             $table->string('name');

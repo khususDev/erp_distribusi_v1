@@ -93,7 +93,7 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $request->validate([
-            'code' => 'required|unique:mst_product,code,' . $product->id,
+            'code' => 'required|unique:mst_inventory_product,code,' . $product->id,
             'name' => 'required',
         ]);
 

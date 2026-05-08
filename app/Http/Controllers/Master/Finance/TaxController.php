@@ -33,7 +33,7 @@ class TaxController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|unique:tax,code',
+            'code' => 'required|unique:mst_finance_tax,code',
             'name' => 'required',
             'rate' => 'required|numeric|min:0',
         ]);
@@ -65,7 +65,7 @@ class TaxController extends Controller
     public function update(Request $request, Tax $tax)
     {
         $request->validate([
-            'code' => 'required|unique:taxes,code,' . $tax->id,
+            'code' => 'required|unique:mst_finance_tax,code,' . $tax->id,
             'name' => 'required',
             'rate' => 'required|numeric|min:0',
         ]);

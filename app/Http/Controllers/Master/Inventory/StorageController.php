@@ -35,13 +35,13 @@ class StorageController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code'         => 'required',
+            'code'         => 'required|unique:mst_inventory_storage,code',
             'name'         => 'required',
             'warehouse_id' => 'required',
         ]);
 
         Storage::create($request->all());
-        return back();
+        return back()->with('success', 'Storage berhasil ditambahkan');
     }
 
     /**
@@ -66,13 +66,13 @@ class StorageController extends Controller
     public function update(Request $request, Storage $storage)
     {
         $request->validate([
-            'code'         => 'required',
+            'code'         => 'required|unique:mst_inventory_storage,code,' . $storage->id,
             'name'         => 'required',
             'warehouse_id' => 'required',
         ]);
 
         $storage->update($request->all());
-        return back();
+        return back()->with('success', 'Storage berhasil diperbarui');
     }
 
     /**
@@ -81,6 +81,6 @@ class StorageController extends Controller
     public function destroy(Storage $storage)
     {
         $storage->update(['is_active' => false]);
-        return back();
+        return back()->with('success', 'Storage berhasil dinonaktifkan');
     }
 }

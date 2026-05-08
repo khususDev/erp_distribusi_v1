@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('mst_product', function (Blueprint $table) {
+        Schema::table('mst_inventory_product', function (Blueprint $table) {
             $table->string('sku')
                 ->nullable()        // ⬅️ PENTING
                 ->after('id');
@@ -35,7 +35,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('mst_product', function (Blueprint $table) {
+        Schema::table('mst_inventory_product', function (Blueprint $table) {
             $table->dropColumn([
                 'sku',
                 'type',

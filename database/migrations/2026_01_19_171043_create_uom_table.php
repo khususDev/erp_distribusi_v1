@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('uom', function (Blueprint $table) {
+        Schema::create('mst_inventory_uom', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
             $table->string('name');

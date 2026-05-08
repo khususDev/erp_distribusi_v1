@@ -33,7 +33,7 @@ class DepartmentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|unique:department',
+            'code' => 'required|unique:mst_organization_department,code',
             'name' => 'required',
         ]);
 
@@ -64,7 +64,7 @@ class DepartmentController extends Controller
     public function update(Request $request, Department $department)
     {
         $request->validate([
-            'code' => 'required|unique:department,code,' . $department->id,
+            'code' => 'required|unique:mst_organization_department,code,' . $department->id,
             'name' => 'required',
         ]);
 

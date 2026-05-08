@@ -9,7 +9,7 @@ class Uom extends Model
 {
     use HasFactory;
 
-    protected $table = 'uom';
+    protected $table = 'mst_inventory_uom';
 
     protected $fillable = [
         'code',

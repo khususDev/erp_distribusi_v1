@@ -37,7 +37,7 @@ class CategoryController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'code' => 'required|unique:product_category,code',
+            'code' => 'required|unique:mst_inventory_product_category,code',
         ]);
 
         Category::create($request->all());
@@ -69,7 +69,7 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required',
             'code' =>
-            'required|unique:product_category,code,' .
+            'required|unique:mst_inventory_category,code,' .
                 $category->id,
         ]);
 

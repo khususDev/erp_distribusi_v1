@@ -10,7 +10,7 @@ class Warehouse extends Model
 {
     use HasFactory;
 
-    protected $table = 'mst_warehouse';
+    protected $table = 'mst_inventory_warehouse';
 
     protected $fillable = [
         'code',

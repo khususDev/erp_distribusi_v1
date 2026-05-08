@@ -33,7 +33,7 @@ class UomController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|unique:uom,code',
+            'code' => 'required|unique:mst_inventory_uom,code',
             'name' => 'required',
         ]);
 
@@ -65,7 +65,7 @@ class UomController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'code' => 'required|unique:uom,code,' . $uom->id,
+            'code' => 'required|unique:mst_inventory_uom,code,' . $uom->id,
         ]);
 
         $uom->update($request->all());
