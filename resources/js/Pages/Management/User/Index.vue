@@ -1,5 +1,5 @@
 <script setup>
-import AppLayout from "@/Layouts/AppLayout.vue";
+import AppLayout from "@/Layouts/AuthenticatedLayout.vue";
 </script>
 
 <template>
@@ -29,15 +29,12 @@ import AppLayout from "@/Layouts/AppLayout.vue";
                             </tr>
                         </thead>
 
-                        <tbody>
-
-                        </tbody>
+                        <tbody></tbody>
                     </table>
                 </div>
             </div>
         </section>
 
         <!-- MODAL -->
-        
     </AppLayout>
 </template>

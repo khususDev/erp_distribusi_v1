@@ -1,5 +1,5 @@
 <script setup>
-import AppLayout from "@/Layouts/AppLayout.vue";
+import AppLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { ref } from "vue";
 import { router, usePage } from "@inertiajs/vue3";
 

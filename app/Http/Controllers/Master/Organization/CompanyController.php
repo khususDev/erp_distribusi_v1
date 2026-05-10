@@ -35,6 +35,10 @@ class CompanyController extends Controller
         $request->validate([
             'name' => 'required',
             'code' => 'required|unique:mst_organization_company,code',
+            'email' => 'required|email',
+        ], [
+            'email.required' => 'Email wajib diisi bos!',
+            'email.email'    => 'Format emailnya salah itu.',
         ]);
 
         Company::create($request->all());
@@ -66,6 +70,10 @@ class CompanyController extends Controller
         $request->validate([
             'name' => 'required',
             'code' => 'required|unique:mst_organization_company,code,' . $company->id,
+            'email' => 'required|email',
+        ], [
+            'email.required' => 'Email wajib diisi bos!',
+            'email.email'    => 'Format emailnya salah itu.',
         ]);
 
         $company->update($request->all());

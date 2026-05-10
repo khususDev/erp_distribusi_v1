@@ -1,5 +1,6 @@
 import './bootstrap';
 import '../css/app.css';
+import '../css/main.css';
 import '../css/global.css';
 
 import { createApp, h } from 'vue';
@@ -19,6 +20,6 @@ createInertiaApp({
             .mount(el);
     },
     progress: {
-        color: '#4B5563',
+        color: '#3C50E0', // Ubah ke biru TailAdmin
     },
 });

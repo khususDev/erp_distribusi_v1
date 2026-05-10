@@ -7,7 +7,7 @@
     },
     "devDependencies": {
         "@inertiajs/vue3": "^1.0.0",
-        "@tailwindcss/forms": "^0.5.3",
+        "@tailwindcss/forms": "^0.5.11",
         "@vitejs/plugin-vue": "^5.0.0",
         "autoprefixer": "^10.4.12",
         "axios": "^1.6.4",
@@ -19,6 +19,13 @@
     },
     "dependencies": {
         "@inertiajs/vue3": "^2.3.6",
-        "vue": "^3.5.26"
+        "@tailwindcss/typography": "^0.5.19",
+        "apexcharts": "^5.11.0",
+        "flatpickr": "^4.6.13",
+        "lucide-vue-next": "^1.0.0",
+        "swiper": "^12.1.4",
+        "vue": "^3.5.26",
+        "vue-flatpickr-component": "^12.0.0",
+        "vue3-apexcharts": "^1.11.1"
     }
 }

@@ -38,6 +38,11 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            // Tambahkan ini agar flash message dari Controller sampai ke Vue
+            'flash' => [
+                'success' => fn() => $request->session()->get('success'),
+                'error' => fn() => $request->session()->get('error'),
+            ],
 
             'menus' => function () use ($request) {
                 $user = $request->user();

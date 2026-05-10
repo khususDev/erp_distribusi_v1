@@ -1,0 +1,104 @@
+/* resources/css/main.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* resources/css/main.css */
+
+@font-face {
+    font-family: 'Satoshi';
+    src: url('./fonts/Satoshi-Light.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Satoshi';
+    src: url('./fonts/Satoshi-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Satoshi';
+    src: url('./fonts/Satoshi-Medium.woff2') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Satoshi';
+    src: url('./fonts/Satoshi-Bold.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@layer base {
+    body {
+        @apply font-satoshi text-base font-normal text-body bg-whiten dark:bg-boxdark-2 dark:text-bodydark;
+    }
+}
+
+@layer components {
+    .header {
+        @apply border-b border-stroke bg-white dark:border-strokedark dark:bg-boxdark;
+    }
+
+                .menu-item {
+                    /* Gunakan text-black sebagai default, dan rounded-md untuk lengkungan halus */
+                    @apply relative flex items-center gap-2.5 rounded-md py-2 px-4 font-medium text-black duration-300 ease-in-out dark:text-bodydark1;
+                }
+
+                .menu-item-active {
+                    /* Biru transparan saat menu diklik */
+                    @apply bg-primary/10 text-primary !important;
+                }
+
+        /* 2. STATE HOVER (Mouse lewat, tapi menu tidak aktif) */
+                .menu-item:hover {
+                    /* Teks tetap hitam, hanya background yang muncul abu-abu sangat muda */
+                    @apply bg-gray-2 text-black dark:bg-meta-4 dark:text-white;
+                }
+
+                .menu-dropdown-item {
+                    /* Indentasi sedikit agar terlihat seperti anak menu, warna hitam */
+                    @apply relative flex items-center gap-2.5 rounded-md px-4 text-sm font-medium text-black duration-300 ease-in-out dark:text-bodydark2;
+                }
+        
+                .menu-dropdown-item-active {
+                    /* Warna biru tajam saat submenu aktif */
+                    @apply text-primary !important;
+                }
+                                .menu-dropdown-item:hover {
+                                    /* Teks tetap hitam, hanya background yang muncul abu-abu sangat muda */
+                                    @apply bg-gray-2 text-black dark:bg-meta-4 dark:text-white;
+                                }
+
+                .menu-item svg {
+                    @apply fill-current h-5 w-5;
+                }
+
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+}
+
+/* HAPUS .shadow-default { @apply shadow-default; } */
+
+.z-999 {
+    z-index: 999;
+}
+
+.z-99999 {
+    z-index: 99999;
+}
