@@ -8,15 +8,40 @@
         >
             <div v-if="showEntries" class="flex items-center gap-3">
                 <span class="text-black dark:text-white text-sm">Show</span>
-                <select
-                    @change="$emit('update:entries', $event.target.value)"
-                    class="rounded border border-stroke bg-transparent px-2 py-1 outline-none focus:border-primary dark:border-strokedark dark:bg-meta-4"
-                >
-                    <option value="5">5</option>
-                    <option value="10" selected>10</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
+
+                <div class="relative">
+                    <select
+                        @change="$emit('update:entries', $event.target.value)"
+                        style="background-image: none"
+                        class="appearance-none [&::-ms-expand]:hidden rounded border border-stroke bg-transparent py-1 pl-3 pr-8 outline-none focus:border-primary dark:border-strokedark dark:bg-meta-4"
+                    >
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+
+                    <span
+                        class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2"
+                    >
+                        <svg
+                            class="fill-current"
+                            width="12"
+                            height="8"
+                            viewBox="0 0 12 8"
+                            fill="none"
+                        >
+                            <path
+                                d="M1.5 1.5L6 6L10.5 1.5"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                            />
+                        </svg>
+                    </span>
+                </div>
+
                 <span class="text-black dark:text-white text-sm">entries</span>
             </div>
 
