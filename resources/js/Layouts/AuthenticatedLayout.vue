@@ -1,152 +1,79 @@
 <script setup>
-import { ref } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
+import { useSidebar } from "../Tailadmin/composables/useSidebar";
+import HeaderArea from "../Tailadmin/components/layout/AppHeader.vue";
+import SidebarArea from "../Tailadmin/components/layout/AppSidebar.vue";
+import ThemeProvider from "../Tailadmin/components/layout/ThemeProvider.vue";
+import { watch, ref } from "vue";
+import { useForm, usePage } from "@inertiajs/vue3";
 
-const showingNavigationDropdown = ref(false);
+const { isExpanded, isHovered } = useSidebar();
+const page = usePage();
+const showToast = ref(false);
+const message = ref("");
+
+// Pantau jika ada flash message masuk dari Laravel
+// Pantau jika ada flash message masuk dari Laravel
+watch(
+    () => page.props.flash?.success, // Tambahkan tanda tanya (?) di sini
+    (msg) => {
+        if (msg) {
+            message.value = msg;
+            showToast.value = true;
+
+            // Bersihkan flash message setelah ditampilkan agar tidak muncul lagi saat navigasi balik
+            // (Opsional, tergantung kebutuhan logic UX Anda)
+
+            setTimeout(() => {
+                showToast.value = false;
+                message.value = "";
+            }, 3000);
+        }
+    },
+    { immediate: true },
+);
 </script>
 
 <template>
-    <div>
-        <div class="min-h-screen bg-gray-100">
-            <nav class="bg-white border-b border-gray-100">
-                <!-- Primary Navigation Menu -->
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div class="flex justify-between h-16">
-                        <div class="flex">
-                            <!-- Logo -->
-                            <div class="shrink-0 flex items-center">
-                                <Link :href="route('dashboard')">
-                                    <ApplicationLogo
-                                        class="block h-9 w-auto fill-current text-gray-800"
-                                    />
-                                </Link>
-                            </div>
-
-                            <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
-                                </NavLink>
-                            </div>
-                        </div>
-
-                        <div class="hidden sm:flex sm:items-center sm:ms-6">
-                            <!-- Settings Dropdown -->
-                            <div class="ms-3 relative">
-                                <Dropdown align="right" width="48">
-                                    <template #trigger>
-                                        <span class="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
-                                            >
-                                                {{ $page.props.auth.user.name }}
-
-                                                <svg
-                                                    class="ms-2 -me-0.5 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fill-rule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clip-rule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </template>
-
-                                    <template #content>
-                                        <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
-                                        <DropdownLink :href="route('logout')" method="post" as="button">
-                                            Log Out
-                                        </DropdownLink>
-                                    </template>
-                                </Dropdown>
-                            </div>
-                        </div>
-
-                        <!-- Hamburger -->
-                        <div class="-me-2 flex items-center sm:hidden">
-                            <button
-                                @click="showingNavigationDropdown = !showingNavigationDropdown"
-                                class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
-                            >
-                                <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <path
-                                        :class="{
-                                            hidden: showingNavigationDropdown,
-                                            'inline-flex': !showingNavigationDropdown,
-                                        }"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        :class="{
-                                            hidden: !showingNavigationDropdown,
-                                            'inline-flex': showingNavigationDropdown,
-                                        }"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Responsive Navigation Menu -->
-                <div
-                    :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
-                    class="sm:hidden"
-                >
-                    <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
-
-                    <!-- Responsive Settings Options -->
-                    <div class="pt-4 pb-1 border-t border-gray-200">
-                        <div class="px-4">
-                            <div class="font-medium text-base text-gray-800">
-                                {{ $page.props.auth.user.name }}
-                            </div>
-                            <div class="font-medium text-sm text-gray-500">{{ $page.props.auth.user.email }}</div>
-                        </div>
-
-                        <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')"> Profile </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('logout')" method="post" as="button">
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
-            <!-- Page Heading -->
-            <header class="bg-white shadow" v-if="$slots.header">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <slot name="header" />
-                </div>
-            </header>
-
-            <!-- Page Content -->
-            <main>
-                <slot />
-            </main>
+    <div
+        v-if="showToast"
+        class="fixed top-5 right-5 z-[1000] flex w-full max-w-sm rounded-md border-l-6 border-success bg-white px-4 py-4 shadow-md dark:bg-boxdark"
+    >
+        <div
+            class="mr-3 mt-1 flex h-6 w-6 items-center justify-center rounded-full bg-success text-white"
+        >
+            <svg
+                class="fill-current"
+                width="14"
+                height="10"
+                viewBox="0 0 14 10"
+            >
+                <path d="M5 10L0 5.2L1.4 3.8L5 7.2L12.6 0L14 1.4L5 10Z" />
+            </svg>
+        </div>
+        <div class="w-full">
+            <h5 class="mb-1 font-bold text-black dark:text-white">Berhasil!</h5>
+            <p class="text-sm font-medium">{{ message }}</p>
         </div>
     </div>
+    <ThemeProvider>
+        <div class="flex h-screen overflow-hidden bg-whiten dark:bg-boxdark-2">
+            <SidebarArea />
+
+            <div
+                :class="[
+                    'relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden transition-all duration-300',
+                    'bg-whiten dark:bg-boxdark-2', // Konsistensi background abu-abu muda
+                    isExpanded || isHovered ? 'lg:ml-[290px]' : 'lg:ml-[90px]',
+                ]"
+            >
+                <HeaderArea />
+
+                <main>
+                    <div class="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+                        <slot />
+                    </div>
+                </main>
+            </div>
+        </div>
+    </ThemeProvider>
 </template>

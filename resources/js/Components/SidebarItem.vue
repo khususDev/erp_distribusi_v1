@@ -1,6 +1,6 @@
 <template>
-    <li :class="hasChildren ? 'dropdown' : ''">
-        <!-- MENU TANPA CHILD -->
+    <li :class="[{ dropdown: hasChildren }, { active: isOpen(menu.id) }]">
+        <!-- SINGLE MENU -->
         <a
             v-if="!hasChildren && menu.route"
             :href="route(menu.route)"
@@ -10,43 +10,76 @@
             <span>{{ menu.name }}</span>
         </a>
 
-        <!-- MENU DENGAN CHILD -->
+        <!-- DROPDOWN -->
         <a
             v-else
             href="#"
             class="nav-link has-dropdown"
-            @click.prevent="toggle"
+            @click.prevent="toggleMenu(menu)"
         >
-            <i :class="menu.icon"></i>
-            <span>{{ menu.name }}</span>
+            <div
+                class="d-flex w-100 justify-content-between align-items-center"
+            >
+                <div>
+                    <i :class="menu.icon"></i>
+                    <span>{{ menu.name }}</span>
+                </div>
+
+                <i
+                    class="fas fa-chevron-right sidebar-arrow"
+                    :class="{ rotated: isOpen(menu.id) }"
+                ></i>
+            </div>
         </a>
 
-        <!-- CHILDREN -->
-        <ul v-if="hasChildren" class="erp-submenu" :class="{ open: opened }">
-            <SidebarItem
-                v-for="child in menu.children"
-                :key="child.id"
-                :menu="child"
-            />
-        </ul>
+        <!-- SUBMENU -->
+        <transition name="submenu">
+            <ul v-show="isOpen(menu.id)" class="erp-submenu open">
+                <SidebarItem
+                    v-for="child in menu.children"
+                    :key="child.id"
+                    :menu="child"
+                />
+            </ul>
+        </transition>
     </li>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { computed, inject } from "vue";
 import SidebarItem from "./SidebarItem.vue";
 
 const props = defineProps({
     menu: Object,
 });
 
-const opened = ref(false);
-
-const toggle = () => {
-    opened.value = !opened.value;
-};
+const openedMenus = inject("openedMenus");
+const setOpenedMenus = inject("setOpenedMenus");
 
 const hasChildren = computed(() => {
-    return Array.isArray(props.menu.children) && props.menu.children.length > 0;
+    return props.menu.children?.length > 0;
 });
+
+const isOpen = (id) => {
+    return openedMenus.value.includes(id);
+};
+
+const toggleMenu = (menu) => {
+    let current = [...openedMenus.value];
+
+    // tutup sibling level sama
+    if (menu.parent_id) {
+        current = current.filter((id) => {
+            return id !== menu.parent_id;
+        });
+    }
+
+    if (isOpen(menu.id)) {
+        current = current.filter((id) => id !== menu.id);
+    } else {
+        current.push(menu.id);
+    }
+
+    setOpenedMenus(current);
+};
 </script>

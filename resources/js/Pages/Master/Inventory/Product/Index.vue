@@ -1,5 +1,5 @@
 <script setup>
-import AppLayout from "@/Layouts/AppLayout.vue";
+import AppLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { router } from "@inertiajs/vue3";
 
 defineProps({

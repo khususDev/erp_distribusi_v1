@@ -1,8 +1,8 @@
 <script setup>
-    import AppLayout from "@/Layouts/AppLayout.vue";
-    defineProps({
-        users: Array,
-    });
+import AppLayout from "@/Layouts/AuthenticatedLayout.vue";
+defineProps({
+    users: Array,
+});
 </script>
 
 <template>
@@ -10,7 +10,9 @@
         <section class="section">
             <div class="card">
                 <!-- CARD HEADER -->
-                <div class="card-header d-flex justify-content-between align-items-center p-1 pl-3 pr-3">
+                <div
+                    class="card-header d-flex justify-content-between align-items-center p-1 pl-3 pr-3"
+                >
                     <h6 class="section-title">Menu Permission</h6>
 
                     <button class="btn btn-primary btn-sm">
@@ -31,11 +33,18 @@
 
                         <tbody>
                             <tr v-for="user in users" :key="user.id">
-                                <td>{{ user . name }}</td>
-                                <td>{{ user . email }}</td>
+                                <td>{{ user.name }}</td>
+                                <td>{{ user.email }}</td>
                                 <td>
-                                    <a :href="route('mng_menupermission.edit', user.id)"
-                                        class="btn btn-sm btn-primary">
+                                    <a
+                                        :href="
+                                            route(
+                                                'mng_menupermission.edit',
+                                                user.id,
+                                            )
+                                        "
+                                        class="btn btn-sm btn-primary"
+                                    >
                                         Atur Menu
                                     </a>
                                 </td>
@@ -49,4 +58,3 @@
         <!-- MODAL -->
     </AppLayout>
 </template>
-

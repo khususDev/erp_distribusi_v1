@@ -1,16 +1,24 @@
 <script setup>
-import AppLayout from "@/Layouts/AppLayout.vue";
 import { ref } from "vue";
-import { router } from "@inertiajs/vue3";
+// 1. Pastikan SEMUA komponen diimpor di sini
+import AppLayout from "@/Layouts/AuthenticatedLayout.vue";
+import DataTable from "@/Components/DataTable.vue";
+import Pagination from "@/Components/Pagination.vue";
+import TableAction from "@/Components/TableAction.vue";
+import FormInput from "@/Components/FormInput.vue";
+import Modal from "@/Components/Modal.vue";
+import { useForm, router } from "@inertiajs/vue3";
 
+// 2. Ubah tipe 'companies' menjadi Object (karena hasil paginate adalah Object)
 const props = defineProps({
-    companies: Array,
+    companies: Object,
+    errors: Object,
 });
 
 const showModal = ref(false);
 const isEdit = ref(false);
 
-const form = ref({
+const form = useForm({
     id: null,
     name: "",
     code: "",
@@ -20,188 +28,159 @@ const form = ref({
     is_active: true,
 });
 
+// Fungsi-fungsi lainnya (openCreate, openEdit, submit, destroy) tetap sama...
 const openCreate = () => {
     isEdit.value = false;
-    form.value = {
-        id: null,
-        name: "",
-        code: "",
-        phone: "",
-        email: "",
-        address: "",
-        is_active: true,
-    };
+    form.reset();
     showModal.value = true;
 };
 
 const openEdit = (company) => {
     isEdit.value = true;
-    form.value = { ...company };
+    form.clearErrors();
+    form.id = company.id;
+    form.name = company.name;
+    form.code = company.code;
+    form.phone = company.phone;
+    form.email = company.email;
+    form.address = company.address;
+    form.is_active = company.is_active;
     showModal.value = true;
 };
 
-const close = () => {
-    showModal.value = false;
-};
-
-function submit() {
+const submit = () => {
     if (isEdit.value) {
-        router.put(`/mst_grl_company/${form.value.id}`, form.value, {
+        form.put(route("mst_grl_company.update", form.id), {
             onSuccess: () => (showModal.value = false),
         });
     } else {
-        router.post("/mst_grl_company", form.value, {
-            onSuccess: () => (showModal.value = false),
+        form.post(route("mst_grl_company.store"), {
+            onSuccess: () => {
+                form.reset();
+                showModal.value = false;
+            },
         });
     }
-}
+};
 
-const destroy = (company) => {
+const destroy = (id) => {
     if (confirm("Hapus company ini?")) {
-        router.delete(`/mst_grl_company/${company.id}`);
+        router.delete(route("mst_grl_company.destroy", id));
     }
 };
 </script>
 
 <template>
     <AppLayout>
-        <div class="section-body">
-            <div class="card">
-                <div class="card-header">
-                    <button class="btn btn-primary" @click="openCreate">
-                        <i class="fas fa-plus"></i> Tambah Company
-                    </button>
-                </div>
+        <DataTable
+            :headers="['User', 'Position', 'Salary', 'Status', 'Action']"
+            :from="companies.from"
+            :to="companies.to"
+            :total="companies.total"
+        >
+            <template #top-actions>
+                <button
+                    @click="openCreate"
+                    class="flex items-center gap-2 rounded bg-primary px-4 py-2 font-medium text-white hover:bg-opacity-90"
+                >
+                    Tambah
+                </button>
+            </template>
 
-                <div class="card-body p-0">
-                    <table class="table table-striped mb-0">
-                        <thead class="thead-light">
-                            <tr>
-                                <th>Nama</th>
-                                <th>Code</th>
-                                <th>Email</th>
-                                <th>Status</th>
-                                <th width="150">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="company in companies" :key="company.id">
-                                <td>{{ company.name }}</td>
-                                <td>{{ company.code }}</td>
-                                <td>{{ company.email ?? "-" }}</td>
-                                <td>
-                                    <span
-                                        v-if="company.is_active"
-                                        class="badge badge-success"
-                                    >
-                                        Aktif
-                                    </span>
-                                    <span v-else class="badge badge-danger">
-                                        Nonaktif
-                                    </span>
-                                </td>
-                                <td>
-                                    <button
-                                        class="btn btn-sm btn-warning mr-1"
-                                        @click="openEdit(company)"
-                                    >
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button
-                                        class="btn btn-sm btn-danger"
-                                        @click="destroy(company)"
-                                    >
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
+            <tr
+                v-for="(company, key) in companies.data"
+                :key="company.id"
+                class="border-b border-stroke dark:border-strokedark"
+            >
+                <td class="px-4 py-5 xl:pl-11"><input type="checkbox" /></td>
 
-                            <tr v-if="companies.length === 0">
-                                <td colspan="5" class="text-center text-muted">
-                                    Data company belum tersedia
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                <td class="px-4 py-5">
+                    <h5 class="font-medium text-black dark:text-white">
+                        {{ company.name }}
+                    </h5>
+                    <p class="text-sm">{{ company.email }}</p>
+                </td>
 
-            <!-- MODAL -->
-            <div class="modal fade show d-block" v-if="showModal">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                {{ isEdit ? "Edit Company" : "Tambah Company" }}
-                            </h5>
-                            <button type="button" class="close" @click="close">
-                                <span>&times;</span>
-                            </button>
-                        </div>
+                <td class="px-4 py-5 text-black dark:text-white">Manager</td>
+                <td class="px-4 py-5 text-black dark:text-white">$80,000</td>
 
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label>Nama</label>
-                                <input
-                                    v-model="form.name"
-                                    class="form-control"
-                                />
-                            </div>
+                <td class="px-4 py-5">
+                    <span
+                        :class="
+                            company.is_active
+                                ? 'bg-success/10 text-success'
+                                : 'bg-danger/10 text-danger'
+                        "
+                        class="inline-flex rounded-full px-3 py-1 text-sm font-medium"
+                    >
+                        {{ company.is_active ? "Active" : "Inactive" }}
+                    </span>
+                </td>
 
-                            <div class="form-group">
-                                <label>Code</label>
-                                <input
-                                    v-model="form.code"
-                                    class="form-control"
-                                    :disabled="isEdit"
-                                />
-                            </div>
+                <td class="px-4 py-5">
+                    <TableAction
+                        @edit="openEdit(company)"
+                        @delete="destroy(company.id)"
+                    />
+                </td>
+            </tr>
 
-                            <div class="form-group">
-                                <label>Email</label>
-                                <input
-                                    v-model="form.email"
-                                    class="form-control"
-                                />
-                            </div>
+            <template #pagination>
+                <Pagination :links="companies.links" />
+            </template>
+        </DataTable>
 
-                            <div class="form-group">
-                                <label>Phone</label>
-                                <input
-                                    v-model="form.phone"
-                                    class="form-control"
-                                />
-                            </div>
-
-                            <div class="form-group">
-                                <label>Address</label>
-                                <textarea
-                                    v-model="form.address"
-                                    class="form-control"
-                                ></textarea>
-                            </div>
-
-                            <div class="form-check">
-                                <input
-                                    type="checkbox"
-                                    v-model="form.is_active"
-                                    class="form-check-input"
-                                />
-                                <label class="form-check-label">Aktif</label>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button class="btn btn-secondary" @click="close">
-                                Batal
-                            </button>
-                            <button class="btn btn-primary" @click="submit">
-                                Simpan
-                            </button>
-                        </div>
-                    </div>
+        <Modal
+            :show="showModal"
+            :title="isEdit ? 'Edit Company' : 'Tambah Company'"
+            @close="showModal = false"
+        >
+            <div class="flex flex-col gap-4">
+                <FormInput
+                    v-model="form.name"
+                    label="Nama"
+                    :error="form.errors.name"
+                />
+                <FormInput
+                    v-model="form.code"
+                    label="Code"
+                    :error="form.errors.code"
+                    :disabled="isEdit"
+                />
+                <FormInput
+                    v-model="form.email"
+                    label="Email"
+                    :error="form.errors.email"
+                />
+                <FormInput
+                    v-model="form.phone"
+                    label="Phone"
+                    :error="form.errors.phone"
+                />
+                <FormInput
+                    v-model="form.address"
+                    label="Address"
+                    :error="form.errors.address"
+                />
+                <div class="flex items-center gap-2">
+                    <input
+                        type="checkbox"
+                        v-model="form.is_active"
+                        id="is_active"
+                    />
+                    <label for="is_active" class="text-black dark:text-white"
+                        >Aktif</label
+                    >
                 </div>
             </div>
-        </div>
+            <template #footer>
+                <button
+                    @click="submit"
+                    class="rounded bg-primary px-6 py-2 text-white"
+                >
+                    Simpan
+                </button>
+            </template>
+        </Modal>
     </AppLayout>
 </template>
