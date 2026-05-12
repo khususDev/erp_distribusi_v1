@@ -12,10 +12,23 @@ class CompanyController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        // Ambil parameter search dari request
+        $search = $request->input('search');
+
+        $companies = Company::query()
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('code', 'like', "%{$search}%");
+            })
+            ->orderBy('name')
+            ->paginate(10) // WAJIB menggunakan paginate agar .data dan .links muncul
+            ->withQueryString(); // Menjaga parameter search saat pindah halaman
+
         return Inertia::render('Master/Organization/Company/Index', [
-            'companies' => Company::orderBy('name')->get(),
+            'companies' => $companies,
+            'filters'   => $request->only(['search']) // Kirim balik untuk isi input search
         ]);
     }
 
