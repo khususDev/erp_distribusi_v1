@@ -6,6 +6,7 @@ export default function useCrud(config) {
     const showDeleteModal = ref(false);
     const isEdit = ref(false);
     const selectedId = ref(null);
+    const loading = ref(false);
 
     const form = useForm({
         ...config.initialForm,
@@ -55,6 +56,7 @@ export default function useCrud(config) {
     // SUBMIT
     // =========================
     const submit = () => {
+        loading.value = true;
         if (isEdit.value) {
             form.put(`${config.updateRoute}/${selectedId.value}`, {
                 preserveScroll: true,
@@ -62,6 +64,9 @@ export default function useCrud(config) {
                 onSuccess: () => {
                     closeModal();
                 },
+                onFinish: () => {
+                    loading.value = false;
+                }
             });
         } else {
             form.post(`${config.storeRoute}`, {
@@ -71,20 +76,43 @@ export default function useCrud(config) {
                     closeModal();
                     form.reset();
                 },
+                onFinish: () => {
+                    loading.value = false;
+                }
             });
         }
     };
 
     // =========================
-    // DELETE
-    // =========================
-    const destroy = (id) => {
-        if (confirm(config.deleteMessage ?? "Hapus data ini?")) {
-            router.delete(`${config.deleteRoute}/${id}`, {
-                preserveScroll: true,
-            });
+// OPEN DELETE MODAL
+// =========================
+const openDelete = (id) => {
+    selectedId.value = id;
+    showDeleteModal.value = true;
+};
+
+// =========================
+// CLOSE DELETE MODAL
+// =========================
+const closeDeleteModal = () => {
+    showDeleteModal.value = false;
+};
+
+// =========================
+// CONFIRM DELETE
+// =========================
+const confirmDelete = () => {
+    router.delete(
+        `${config.deleteRoute}/${selectedId.value}`,
+        {
+            preserveScroll: true,
+
+            onSuccess: () => {
+                closeDeleteModal();
+            },
         }
-    };
+    );
+};
 
     return {
         form,
@@ -95,6 +123,7 @@ export default function useCrud(config) {
         isEdit,
 
         selectedId,
+        loading,
 
         openCreate,
         openEdit,
@@ -102,6 +131,8 @@ export default function useCrud(config) {
         closeModal,
 
         submit,
-        destroy,
+        openDelete,
+closeDeleteModal,
+confirmDelete,
     };
 }

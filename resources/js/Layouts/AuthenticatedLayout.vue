@@ -11,8 +11,6 @@ const page = usePage();
 const showToast = ref(false);
 const message = ref("");
 
-// Pantau jika ada flash message masuk dari Laravel
-// Pantau jika ada flash message masuk dari Laravel
 watch(
     () => page.props.flash?.success, // Tambahkan tanda tanya (?) di sini
     (msg) => {
@@ -36,7 +34,7 @@ watch(
 <template>
     <div
         v-if="showToast"
-        class="fixed top-5 right-5 z-[1000] flex w-full max-w-sm rounded-md border-l-6 border-success bg-white px-4 py-4 shadow-md dark:bg-boxdark"
+        class="fixed top-24 right-5 z-[99999] flex w-full max-w-sm rounded-md border-l-[6px] border-success bg-white px-4 py-4 shadow-2xl dark:bg-boxdark"
     >
         <div
             class="mr-3 mt-1 flex h-6 w-6 items-center justify-center rounded-full bg-success text-white"

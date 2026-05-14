@@ -14,21 +14,33 @@ class CompanyController extends Controller
      */
     public function index(Request $request)
     {
-        // Ambil parameter search dari request
-        $search = $request->input('search');
+        $entries = $request->entries ?? 10;
 
         $companies = Company::query()
-            ->when($search, function ($query, $search) {
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('code', 'like', "%{$search}%");
+
+            ->when($request->search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('code', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
             })
-            ->orderBy('name')
-            ->paginate(10) // WAJIB menggunakan paginate agar .data dan .links muncul
-            ->withQueryString(); // Menjaga parameter search saat pindah halaman
+
+            ->when($request->status !== null && $request->status !== '', function ($query) use ($request) {
+                $query->where('is_active', $request->status);
+            })
+
+            ->paginate($entries)
+            ->appends($request->query());
 
         return Inertia::render('Master/Organization/Company/Index', [
             'companies' => $companies,
-            'filters'   => $request->only(['search']) // Kirim balik untuk isi input search
+
+            'filters' => [
+                'search' => $request->search,
+                'entries' => $entries,
+                'status' => $request->status,
+            ],
         ]);
     }
 
