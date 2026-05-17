@@ -5,6 +5,7 @@ namespace App\Models\Master\Inventory;
 use App\Models\Master\Finance\Tax;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Vinkla\Hashids\Facades\Hashids;
 
 class Product extends Model
 {
@@ -13,20 +14,39 @@ class Product extends Model
     protected $table = 'mst_inventory_product';
 
     protected $fillable = [
-        'code',
+        'sku',
         'name',
         'barcode',
+
         'category_id',
         'brand_id',
+        'uom_id',
+        'tax_id',
+
         'type',
+        'track_stock',
+
+        'is_sellable',
+        'is_purchaseable',
+        'is_active',
+
         'min_stock',
         'max_stock',
+
         'purchase_price',
         'selling_price',
-        'tax_id',
-        'is_active',
+
         'description',
     ];
+
+    // 1. Beritahu Laravel untuk selalu menyertakan atribut buatan ini
+    protected $appends = ['hash_id'];
+
+    // 2. Buat fungsinya
+    public function getHashIdAttribute()
+    {
+        return Hashids::encode($this->id);
+    }
 
     public function category()
     {
@@ -38,11 +58,10 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
-    public function uoms()
+    public function uom()
     {
-        return $this->hasMany(ProductUom::class);
+        return $this->belongsTo(Uom::class);
     }
-
     public function tax()
     {
         return $this->belongsTo(Tax::class);

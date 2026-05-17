@@ -12,10 +12,34 @@ class BrandController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $entries = $request->entries ?? 10;
+
+        $brands = Brand::query()
+
+            ->when($request->search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('code', 'like', "%{$search}%");
+                });
+            })
+
+            ->when($request->status !== null && $request->status !== '', function ($query) use ($request) {
+                $query->where('is_active', $request->status);
+            })
+
+            ->paginate($entries)
+            ->appends($request->query());
+
         return Inertia::render('Master/Inventory/Brand/Index', [
-            'brands' => Brand::orderBy('name')->get(),
+            'brands' => $brands,
+
+            'filters' => [
+                'search' => $request->search,
+                'entries' => $entries,
+                'status' => $request->status,
+            ],
         ]);
     }
 

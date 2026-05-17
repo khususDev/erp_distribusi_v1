@@ -1,103 +1,112 @@
 <script setup>
 import AppLayout from "@/Layouts/AuthenticatedLayout.vue";
+import Breadcrumb from "@/Components/Page/Breadcrumb.vue";
+import DataTable from "@/Components/Table/DataTable.vue";
+import Pagination from "@/Components/Table/Pagination.vue";
+import TableAction from "@/Components/Table/TableAction.vue";
+import TableEmpty from "@/Components/Table/TableEmpty.vue";
+import TableLoading from "@/Components/Table/TableLoading.vue";
+import PrimaryButton from "@/Components/Button/PrimaryButton.vue";
+import StatusBadge from "@/Components/Badge/StatusBadge.vue";
+import useTable from "@/Composables/useTable";
 import { router } from "@inertiajs/vue3";
 
-defineProps({
-    products: Array,
+const props = defineProps({
+    products: Object,
+    filters: Object,
 });
 
-const goCreate = () => {
-    router.visit("/mst_inv_product/create");
-};
+const { search, entries } = useTable({
+    route: "/mst_inv_product",
+    search: props.filters?.search ?? "",
+    entries: props.filters?.entries ?? 10,
+});
 
-const goEdit = (id) => {
-    router.visit(`/mst_inv_product/${id}/edit`);
+// Navigasi ke halaman terpisah
+const goToCreate = () => router.get("/mst_inv_product/create");
+const goToEdit = (id) => router.get(`/mst_inv_product/${id}/edit`);
+const deleteProduct = (id) => {
+    if (confirm("Apakah anda yakin ingin menghapus product ini?")) {
+        router.delete(`/mst_inv_product/${id}`);
+    }
 };
 </script>
 
 <template>
     <AppLayout>
-        <section class="section">
-            <div class="card">
-                <!-- HEADER -->
-                <div
-                    class="card-header d-flex justify-content-between align-items-center p-2"
+        <Breadcrumb
+            pageTitle="Products"
+            :crumbs="['Master Data', 'Inventory']"
+        />
+
+        <DataTable
+            :headers="[
+                'SKU',
+                'Product Name',
+                'Category',
+                'Brand',
+                'Status',
+                'Action',
+            ]"
+            :from="products.from"
+            :to="products.to"
+            :total="products.total"
+            :search="search"
+            :entries="entries"
+            @search="search = $event"
+            @update:entries="entries = $event"
+        >
+            <template #top-actions>
+                <PrimaryButton @click="goToCreate" size="sm"
+                    >Tambah Product</PrimaryButton
                 >
-                    <h6 class="mb-0">Master Product</h6>
+                <div class="h-6 w-px bg-stroke dark:bg-strokedark mx-1"></div>
+                <PrimaryButton size="sm" class="!bg-slate-500"
+                    >Import</PrimaryButton
+                >
+                <PrimaryButton size="sm" class="!bg-slate-500"
+                    >Export</PrimaryButton
+                >
+            </template>
 
-                    <button class="btn btn-primary btn-sm" @click="goCreate">
-                        <i class="fas fa-plus"></i> Tambah Product
-                    </button>
-                </div>
+            <TableLoading v-if="!products.data" :rows="5" :cols="6" />
 
-                <!-- BODY -->
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-striped mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Kode</th>
-                                    <th>Nama Product</th>
-                                    <th>Kategori</th>
-                                    <th>Brand</th>
-                                    <th>Status</th>
-                                    <th width="120">Aksi</th>
-                                </tr>
-                            </thead>
+            <tr
+                v-for="product in products.data"
+                :key="product.id"
+                class="border-b border-stroke dark:border-strokedark"
+            >
+                <td class="px-4 py-5 font-medium text-black dark:text-white">
+                    {{ product.sku }}
+                </td>
+                <td class="px-4 py-5 font-medium text-black dark:text-white">
+                    {{ product.name }}
+                </td>
+                <td class="px-4 py-5 text-black dark:text-white">
+                    {{ product.category?.name ?? "-" }}
+                </td>
+                <td class="px-4 py-5 text-black dark:text-white">
+                    {{ product.brand?.name ?? "-" }}
+                </td>
+                <td class="px-4 py-5">
+                    <StatusBadge :active="product.is_active" />
+                </td>
+                <td class="px-4 py-5">
+                    <TableAction
+                        @edit="goToEdit(product.hash_id)"
+                        @delete="deleteProduct(product.hash_id)"
+                    />
+                </td>
+            </tr>
 
-                            <tbody>
-                                <tr
-                                    v-for="product in products"
-                                    :key="product.id"
-                                >
-                                    <td>
-                                        <strong>{{ product.code }}</strong>
-                                    </td>
-                                    <td>{{ product.name }}</td>
-                                    <td>
-                                        {{ product.category?.name ?? "-" }}
-                                    </td>
-                                    <td>
-                                        {{ product.brand?.name ?? "-" }}
-                                    </td>
-                                    <td>
-                                        <span
-                                            :class="
-                                                product.is_active
-                                                    ? 'badge badge-success'
-                                                    : 'badge badge-danger'
-                                            "
-                                        >
-                                            {{
-                                                product.is_active
-                                                    ? "Aktif"
-                                                    : "Nonaktif"
-                                            }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <button
-                                            class="btn btn-sm btn-warning"
-                                            @click="goEdit(product.id)"
-                                        >
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+            <TableEmpty
+                v-if="products.data && products.data.length === 0"
+                :colspan="7"
+            />
 
-                                <tr v-if="products.length === 0">
-                                    <td
-                                        colspan="6"
-                                        class="text-center text-muted"
-                                    >
-                                        Data product belum tersedia
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
+            <template #pagination>
+                <Pagination :links="products.links" />
+            </template>
+        </DataTable>
     </AppLayout>
 </template>

@@ -29,7 +29,10 @@ export default {
         'graydark': '#333A48',
         'meta-4': '#313D4A',
         'primary': '#3C50E0', // Biru Utama TailAdmin
-    'gray-2': '#EFF4FB', // Abu-abu Hover (Light Gray)
+        'danger': '#dc3545',
+        'success': '#10B981',
+        'warning': '#F59E0B',
+        'gray-2': '#EFF4FB', // Abu-abu Hover (Light Gray)
       },
       boxShadow: {
         'default': '0px 8px 13px -3px rgba(0, 0, 0, 0.07)',

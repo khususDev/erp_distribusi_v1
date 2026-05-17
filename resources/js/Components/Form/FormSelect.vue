@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 defineProps({
     modelValue: [String, Number],
     label: String,
@@ -61,6 +61,54 @@ defineEmits(["update:modelValue"]);
                 </svg>
             </span>
         </div>
+
+        <p v-if="error" class="mt-1 text-sm text-danger">
+            {{ error }}
+        </p>
+    </div>
+</template> -->
+
+<script setup>
+defineProps({
+    label: String,
+    modelValue: [String, Number],
+    options: Array,
+    error: String,
+    placeholder: {
+        type: String,
+        default: "Pilih Data",
+    },
+});
+
+defineEmits(["update:modelValue"]);
+</script>
+
+<template>
+    <div>
+        <label
+            v-if="label"
+            class="mb-1 block text-sm font-medium text-black dark:text-white"
+        >
+            {{ label }}
+        </label>
+
+        <select
+            :value="modelValue"
+            @change="$emit('update:modelValue', $event.target.value)"
+            class="w-full rounded-lg border border-stroke bg-transparent px-4 py-2 outline-none transition focus:border-primary dark:border-strokedark dark:bg-form-input dark:focus:border-primary"
+        >
+            <option value="">
+                {{ placeholder }}
+            </option>
+
+            <option
+                v-for="option in options"
+                :key="option.value"
+                :value="option.value"
+            >
+                {{ option.label }}
+            </option>
+        </select>
 
         <p v-if="error" class="mt-1 text-sm text-danger">
             {{ error }}

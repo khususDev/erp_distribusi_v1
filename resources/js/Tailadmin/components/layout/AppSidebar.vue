@@ -86,18 +86,18 @@ const endTransition = (el) => {
             },
         ]"
     >
-        <div class="py-8 flex">
+        <div class="py-4 flex">
             <Link :href="route('dashboard')">
                 <img
-                    src="/images/logo/logo.svg"
+                    src="/images/linera-logo/new-linerago.svg"
                     alt="Logo"
-                    width="150"
+                    width="auto"
                     v-if="isExpanded || isHovered"
                 />
                 <img
-                    src="/images/logo/logo-icon.svg"
+                    src="/images/linera-logo/new-linerago-mini.svg"
                     alt="Logo"
-                    width="32"
+                    width="auto"
                     v-else
                 />
             </Link>

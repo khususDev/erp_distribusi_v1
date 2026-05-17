@@ -16,7 +16,9 @@ defineEmits(["update:modelValue"]);
 
 <template>
     <div>
-        <label class="mb-2.5 block text-black dark:text-white">
+        <label
+            class="mb-1 block text-sm font-medium text-black dark:text-white"
+        >
             {{ label }}
         </label>
 
@@ -26,10 +28,10 @@ defineEmits(["update:modelValue"]);
             :placeholder="placeholder"
             :disabled="disabled"
             @input="$emit('update:modelValue', $event.target.value)"
-            class="w-full rounded-lg border border-stroke bg-transparent py-3 px-5 outline-none focus:border-primary dark:border-strokedark dark:bg-form-input dark:focus:border-primary"
+            class="w-full rounded border border-stroke bg-transparent py-2 px-3 text-sm outline-none transition focus:border-primary disabled:cursor-not-allowed disabled:bg-gray-2 dark:border-strokedark dark:bg-form-input dark:focus:border-primary dark:disabled:bg-meta-4"
         />
 
-        <p v-if="error" class="mt-1 text-sm text-danger">
+        <p v-if="error" class="mt-1 text-xs text-danger">
             {{ error }}
         </p>
     </div>

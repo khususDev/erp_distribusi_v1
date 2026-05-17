@@ -12,14 +12,35 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render(
-            'Master/Inventory/Category/Index',
-            [
-                'categories' => Category::orderBy('name')->get(),
-            ]
-        );
+        $entries = $request->entries ?? 10;
+
+        $categories = Category::query()
+
+            ->when($request->search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('code', 'like', "%{$search}%");
+                });
+            })
+
+            ->when($request->status !== null && $request->status !== '', function ($query) use ($request) {
+                $query->where('is_active', $request->status);
+            })
+
+            ->paginate($entries)
+            ->appends($request->query());
+
+        return Inertia::render('Master/Inventory/Category/Index', [
+            'categories' => $categories,
+
+            'filters' => [
+                'search' => $request->search,
+                'entries' => $entries,
+                'status' => $request->status,
+            ],
+        ]);
     }
 
     /**
@@ -69,7 +90,7 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required',
             'code' =>
-            'required|unique:mst_inventory_category,code,' .
+            'required|unique:mst_inventory_product_category,code,' .
                 $category->id,
         ]);
 

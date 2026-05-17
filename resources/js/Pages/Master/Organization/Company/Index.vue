@@ -59,9 +59,11 @@ const { search, entries, filters } = useTable({
 
 <template>
     <AppLayout>
-        <!-- JUDUL DI LUAR CONTENT (Sesuai Demo) -->
-        <Breadcrumb pageTitle="Company" />
-
+        <!-- Sesuaikan Halaman -->
+        <Breadcrumb
+            pageTitle="Company"
+            :crumbs="['Master Data', 'Organization']"
+        />
         <DataTable
             :headers="['Company', 'Phone', 'Email', 'Status', 'Action']"
             :from="companies.from"
@@ -100,29 +102,44 @@ const { search, entries, filters } = useTable({
             </template> -->
 
             <!-- TABLE BODY -->
-            <TableLoading v-if="loading" :rows="5" :cols="6" />
+            <TableLoading v-if="loading" :rows="5" :cols="5" />
+
             <tr
+                v-else
                 v-for="company in companies.data"
                 :key="company.id"
                 class="border-b border-stroke dark:border-strokedark"
             >
-                <td class="px-4 py-5 xl:pl-11"><input type="checkbox" /></td>
-                <td class="px-4 py-5">
+                <td
+                    class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
+                >
                     <h5 class="font-medium text-black dark:text-white">
                         {{ company.name }}
                     </h5>
                     <p class="text-sm text-body">{{ company.code }}</p>
                 </td>
-                <td class="px-4 py-5 text-black dark:text-white">
+
+                <td
+                    class="border-r border-stroke px-4 py-5 text-center text-black last:border-r-0 dark:border-strokedark dark:text-white"
+                >
                     {{ company.phone ?? "-" }}
                 </td>
-                <td class="px-4 py-5 text-black dark:text-white">
+
+                <td
+                    class="border-r border-stroke px-4 py-5 text-center text-black last:border-r-0 dark:border-strokedark dark:text-white"
+                >
                     {{ company.email ?? "-" }}
                 </td>
-                <td class="px-4 py-5">
+
+                <td
+                    class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
+                >
                     <StatusBadge :active="company.is_active" />
                 </td>
-                <td class="px-4 py-5">
+
+                <td
+                    class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
+                >
                     <TableAction
                         @edit="openEdit(company)"
                         @delete="openDelete(company.id)"

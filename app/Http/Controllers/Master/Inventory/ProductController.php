@@ -10,19 +10,38 @@ use App\Models\Master\Inventory\Product;
 use App\Models\Master\Inventory\Uom;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Vinkla\Hashids\Facades\Hashids;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return inertia('Master/Inventory/Product/Index', [
-            'products' => Product::with([
-                'category',
-                'brand',
-            ])->orderBy('name')->get(),
+        $entries = $request->entries ?? 10;
+
+        $products = Product::with(['category', 'brand', 'uom', 'tax'])
+            ->orderBy('name')
+            ->when($request->search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('sku', 'like', "%{$search}%");
+                });
+            })
+            ->when($request->status !== null && $request->status !== '', function ($query) use ($request) {
+                $query->where('is_active', $request->status);
+            })
+            ->paginate($entries)
+            ->appends($request->query());
+
+        return Inertia::render('Master/Inventory/Product/Index', [
+            'products' => $products,
+            'filters' => [
+                'search'  => $request->search,
+                'entries' => $entries,
+                'status'  => $request->status,
+            ],
         ]);
     }
 
@@ -32,10 +51,10 @@ class ProductController extends Controller
     public function create()
     {
         return Inertia::render('Master/Inventory/Product/Create', [
-            'categories' => Category::active()->get(),
-            'brands'     => Brand::active()->get(),
-            'uoms'       => Uom::active()->get(),
-            'taxes'      => Tax::active()->get(),
+            'categories' => Category::select('id', 'name')->get(),
+            'brands' => Brand::select('id', 'name')->get(),
+            'uoms' => Uom::select('id', 'name')->get(),
+            'taxes' => Tax::select('id', 'name')->get(),
         ]);
     }
 
@@ -44,25 +63,21 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
+            'sku' => 'required|unique:mst_inventory_product,sku',
             'name' => 'required',
-            'category_id' => 'required',
+
+            'category_id' => 'nullable|exists:mst_inventory_product_category,id',
+            'brand_id' => 'nullable|exists:mst_inventory_brand,id',
+            'uom_id' => 'nullable|exists:mst_inventory_uom,id',
+            'tax_id' => 'nullable|exists:mst_finance_tax,id',
         ]);
 
-        $product = Product::create([
-            'code' => $request->code,
-            'name' => $request->name,
-            'category_id' => $request->category_id,
-            'brand_id' => $request->brand_id,
-            'is_active' => true,
-        ]);
+        Product::create($request->all());
 
-        // simpan multi uom (kalau masih dipakai)
-        foreach ($request->uoms ?? [] as $uom) {
-            $product->uoms()->create($uom);
-        }
-
-        return redirect()->to('/mst_inv_product');
+        return redirect()
+            ->route('mst_inv_product')
+            ->with('success', 'Product berhasil ditambahkan');
     }
 
     /**
@@ -76,38 +91,61 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit($hash) // Ganti parameter jadi $hash
     {
+        // 1. Decode hasilnya
+        $decoded = Hashids::decode($hash);
+
+        // 2. Jika ada orang iseng merubah URL hash secara asal, gagalkan (404)
+        if (empty($decoded)) {
+            abort(404);
+        }
+
+        // 3. Ambil indeks ke-0 (ID aslinya)
+        $real_id = $decoded[0];
+        $product = Product::findOrFail($real_id);
+
         return Inertia::render('Master/Inventory/Product/Edit', [
-            'product'    => $product->load('uoms'),
-            'categories' => Category::active()->get(),
-            'brands'     => Brand::active()->get(),
-            'uoms'       => Uom::active()->get(),
-            'taxes'      => Tax::active()->get(),
+            'product' => $product,
+            'categories' => Category::select('id', 'name')->get(),
+            'brands' => Brand::select('id', 'name')->get(),
+            'uoms' => Uom::select('id', 'name')->get(),
+            'taxes' => Tax::select('id', 'name')->get(),
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $hash) // Ganti parameter jadi $hash
     {
-        $request->validate([
-            'code' => 'required|unique:mst_inventory_product,code,' . $product->id,
+        $decoded = Hashids::decode($hash);
+        if (empty($decoded)) abort(404);
+
+        $product = Product::findOrFail($decoded[0]);
+
+        $validated = $request->validate([
+            'sku' => 'required|unique:mst_inventory_product,sku,' . $product->id,
             'name' => 'required',
+            'category_id' => 'nullable|exists:mst_inventory_product_category,id',
+            'brand_id' => 'nullable|exists:mst_inventory_brand,id',
+            'uom_id' => 'nullable|exists:mst_inventory_uom,id',
+            'tax_id' => 'nullable|exists:mst_finance_tax,id',
         ]);
 
         $product->update($request->all());
 
-        return redirect()->route('mst_inv_product')
-            ->with('success', 'Product berhasil diupdate');
+        return redirect()
+            ->route('mst_inv_product')
+            ->with('success', 'Product berhasil diperbarui');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy($hash) // Ganti parameter jadi $hash
     {
+        $decoded = Hashids::decode($hash);
+        if (empty($decoded)) abort(404);
+
+        $product = Product::findOrFail($decoded[0]);
         $product->update(['is_active' => false]);
 
         return back()->with('success', 'Product dinonaktifkan');

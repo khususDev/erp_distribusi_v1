@@ -17,4 +17,8 @@ class Department extends Model
         'description',
         'is_active',
     ];
+
+    protected $casts = [
+        'is_active' => 'boolean', // Memaksa 1 menjadi true, 0 menjadi false
+    ];
 }

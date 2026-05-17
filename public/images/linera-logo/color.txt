@@ -1,0 +1,4 @@
+coloring logo
+color 1 : 0A56AC
+color 2 : 1D1C1C
+color 3 : F9F7F7
