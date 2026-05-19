@@ -66,4 +66,8 @@ class Product extends Model
     {
         return $this->belongsTo(Tax::class);
     }
+    public function productUoms()
+    {
+        return $this->hasMany(ProductUom::class);
+    }
 }

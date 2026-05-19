@@ -39,6 +39,14 @@ const form = useForm({
     selling_price: 0,
 
     description: "",
+
+    product_uoms: [
+        {
+            uom_id: "",
+            conversion_rate: 1,
+            is_base: true,
+        },
+    ],
 });
 
 const submit = () => {

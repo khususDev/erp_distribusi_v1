@@ -16,17 +16,17 @@
 
 
 -- Dumping database structure for db_erp
-CREATE DATABASE IF NOT EXISTS `db_erp` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE IF NOT EXISTS `db_erp` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `db_erp`;
 
 -- Dumping structure for table db_erp.failed_jobs
 CREATE TABLE IF NOT EXISTS `failed_jobs` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
-  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `uuid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`)
@@ -37,9 +37,9 @@ CREATE TABLE IF NOT EXISTS `failed_jobs` (
 -- Dumping structure for table db_erp.menus
 CREATE TABLE IF NOT EXISTS `menus` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `route` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `icon` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `route` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `icon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `parent_id` bigint unsigned DEFAULT NULL,
   `order` int NOT NULL DEFAULT '0',
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `menus` (
   CONSTRAINT `menus_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.menus: ~22 rows (approximately)
+-- Dumping data for table db_erp.menus: ~29 rows (approximately)
 INSERT INTO `menus` (`id`, `name`, `route`, `icon`, `parent_id`, `order`, `is_active`, `is_sidebar`, `created_at`, `updated_at`) VALUES
 	(1, 'Dashboard', 'dashboard', 'fas fa-home', NULL, 1, 1, 1, NULL, NULL),
 	(2, 'Master Data', NULL, 'fas fa-file', NULL, 2, 1, 1, NULL, NULL),
@@ -69,7 +69,7 @@ INSERT INTO `menus` (`id`, `name`, `route`, `icon`, `parent_id`, `order`, `is_ac
 	(20, 'Organization', NULL, 'fas fa-id-badge', 2, 1, 1, 1, NULL, NULL),
 	(21, 'Company', 'mst_grl_company', NULL, 20, 1, 1, 1, NULL, NULL),
 	(22, 'Product Category\r\n', 'mst_inv_category', NULL, 23, 3, 1, 1, NULL, NULL),
-	(23, 'Inventory', NULL, 'fas fa-id-badge', 2, 2, 1, 1, NULL, NULL),
+	(23, 'Product & Inventory', NULL, 'fas fa-id-badge', 2, 2, 1, 1, NULL, NULL),
 	(24, 'Brand', 'mst_inv_brand', NULL, 23, 2, 1, 1, NULL, NULL),
 	(25, 'Product', 'mst_inv_product', NULL, 23, 4, 1, 1, NULL, NULL),
 	(26, 'Warehouse', 'mst_inv_warehouse', NULL, 23, 5, 1, 1, NULL, NULL),
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `menu_permission` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.menu_permission: ~21 rows (approximately)
+-- Dumping data for table db_erp.menu_permission: ~28 rows (approximately)
 INSERT INTO `menu_permission` (`id`, `menu_id`, `user_id`) VALUES
 	(1, 1, 1),
 	(2, 2, 1),
@@ -125,12 +125,12 @@ INSERT INTO `menu_permission` (`id`, `menu_id`, `user_id`) VALUES
 -- Dumping structure for table db_erp.migrations
 CREATE TABLE IF NOT EXISTS `migrations` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.migrations: ~30 rows (approximately)
+-- Dumping data for table db_erp.migrations: ~35 rows (approximately)
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 	(1, '2014_10_12_000000_create_users_table', 1),
 	(2, '2014_10_12_100000_create_password_reset_tokens_table', 1),
@@ -166,12 +166,14 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 	(33, '2026_02_03_163553_create_mst_sales_customer_table', 25),
 	(35, '2026_02_03_165818_create_mst_sales_salesman_table', 26),
 	(38, '2026_05_08_180328_create_mst_finance_payment_term_table', 27),
-	(39, '2026_05_17_152329_create_mst_inventory_product_table', 28);
+	(39, '2026_05_17_152329_create_mst_inventory_product_table', 28),
+	(40, '2026_05_08_172233_create_mst_sales_area_table', 29),
+	(41, '2026_05_19_030946_create_mst_inventory_product_uom_table', 30);
 
 -- Dumping structure for table db_erp.model_has_permissions
 CREATE TABLE IF NOT EXISTS `model_has_permissions` (
   `permission_id` bigint unsigned NOT NULL,
-  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `model_id` bigint unsigned NOT NULL,
   PRIMARY KEY (`permission_id`,`model_id`,`model_type`),
   KEY `model_has_permissions_model_id_model_type_index` (`model_id`,`model_type`),
@@ -183,21 +185,21 @@ CREATE TABLE IF NOT EXISTS `model_has_permissions` (
 -- Dumping structure for table db_erp.model_has_roles
 CREATE TABLE IF NOT EXISTS `model_has_roles` (
   `role_id` bigint unsigned NOT NULL,
-  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `model_id` bigint unsigned NOT NULL,
   PRIMARY KEY (`role_id`,`model_id`,`model_type`),
   KEY `model_has_roles_model_id_model_type_index` (`model_id`,`model_type`),
   CONSTRAINT `model_has_roles_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.model_has_roles: ~2 rows (approximately)
+-- Dumping data for table db_erp.model_has_roles: ~0 rows (approximately)
 
 -- Dumping structure for table db_erp.mst_finance_currency
 CREATE TABLE IF NOT EXISTS `mst_finance_currency` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `symbol` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `symbol` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -212,9 +214,9 @@ INSERT INTO `mst_finance_currency` (`id`, `code`, `name`, `symbol`, `is_active`,
 -- Dumping structure for table db_erp.mst_finance_payment_method
 CREATE TABLE IF NOT EXISTS `mst_finance_payment_method` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -227,10 +229,10 @@ CREATE TABLE IF NOT EXISTS `mst_finance_payment_method` (
 -- Dumping structure for table db_erp.mst_finance_payment_term
 CREATE TABLE IF NOT EXISTS `mst_finance_payment_term` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `days` int NOT NULL DEFAULT '0',
-  `description` text COLLATE utf8mb4_unicode_ci,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -245,10 +247,10 @@ INSERT INTO `mst_finance_payment_term` (`id`, `code`, `name`, `days`, `descripti
 -- Dumping structure for table db_erp.mst_finance_tax
 CREATE TABLE IF NOT EXISTS `mst_finance_tax` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `rate` decimal(5,2) NOT NULL,
-  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -263,9 +265,9 @@ INSERT INTO `mst_finance_tax` (`id`, `code`, `name`, `rate`, `description`, `is_
 -- Dumping structure for table db_erp.mst_inventory_brand
 CREATE TABLE IF NOT EXISTS `mst_inventory_brand` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -273,21 +275,21 @@ CREATE TABLE IF NOT EXISTS `mst_inventory_brand` (
   UNIQUE KEY `mst_brand_code_unique` (`code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.mst_inventory_brand: ~1 rows (approximately)
+-- Dumping data for table db_erp.mst_inventory_brand: ~0 rows (approximately)
 INSERT INTO `mst_inventory_brand` (`id`, `name`, `code`, `description`, `is_active`, `created_at`, `updated_at`) VALUES
 	(1, 'Mayora indah', 'BR001', 'PT Mayota Indah', 1, '2026-01-29 08:57:16', '2026-01-29 09:08:35');
 
 -- Dumping structure for table db_erp.mst_inventory_product
 CREATE TABLE IF NOT EXISTS `mst_inventory_product` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `sku` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `barcode` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `sku` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `barcode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `category_id` bigint unsigned NOT NULL,
   `brand_id` bigint unsigned DEFAULT NULL,
   `uom_id` bigint unsigned NOT NULL,
   `tax_id` bigint unsigned DEFAULT NULL,
-  `type` enum('stock','non_stock','service') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'stock',
+  `type` enum('stock','non_stock','service') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'stock',
   `track_stock` tinyint(1) NOT NULL DEFAULT '1',
   `is_sellable` tinyint(1) NOT NULL DEFAULT '1',
   `is_purchaseable` tinyint(1) NOT NULL DEFAULT '1',
@@ -296,7 +298,7 @@ CREATE TABLE IF NOT EXISTS `mst_inventory_product` (
   `max_stock` decimal(15,2) DEFAULT NULL,
   `purchase_price` decimal(18,2) NOT NULL DEFAULT '0.00',
   `selling_price` decimal(18,2) NOT NULL DEFAULT '0.00',
-  `description` text COLLATE utf8mb4_unicode_ci,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -312,7 +314,7 @@ CREATE TABLE IF NOT EXISTS `mst_inventory_product` (
   CONSTRAINT `mst_inventory_product_uom_id_foreign` FOREIGN KEY (`uom_id`) REFERENCES `mst_inventory_uom` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.mst_inventory_product: ~0 rows (approximately)
+-- Dumping data for table db_erp.mst_inventory_product: ~4 rows (approximately)
 INSERT INTO `mst_inventory_product` (`id`, `sku`, `name`, `barcode`, `category_id`, `brand_id`, `uom_id`, `tax_id`, `type`, `track_stock`, `is_sellable`, `is_purchaseable`, `is_active`, `min_stock`, `max_stock`, `purchase_price`, `selling_price`, `description`, `created_at`, `updated_at`) VALUES
 	(1, '21312312', 'ndaskdnakd', '1232nk32nkjnk', 1, 1, 4, 1, 'stock', 1, 1, 1, 0, 10.00, 1000.00, 12000.00, 15000.00, 'nj jjnnxcjcxnjcxnjxc', '2026-05-17 10:41:25', '2026-05-17 11:04:06'),
 	(3, '4465568889', 'ndaskdnakd', '65767vghgb', 1, 1, 4, 1, 'stock', 1, 1, 1, 1, 10.00, 1000.00, 12000.00, 15000.00, 'nj jjnnxcjcxnjcxnjxc', '2026-05-17 10:43:42', '2026-05-17 10:43:42'),
@@ -322,9 +324,9 @@ INSERT INTO `mst_inventory_product` (`id`, `sku`, `name`, `barcode`, `category_i
 -- Dumping structure for table db_erp.mst_inventory_product_category
 CREATE TABLE IF NOT EXISTS `mst_inventory_product_category` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -337,37 +339,13 @@ INSERT INTO `mst_inventory_product_category` (`id`, `name`, `code`, `description
 	(1, 'wew', 'we', 'ererer', 1, '2026-01-27 09:23:13', '2026-01-27 09:23:13'),
 	(3, 'nons', 'nn', 'noons', 1, '2026-05-16 11:02:06', '2026-05-16 11:02:57');
 
--- Dumping structure for table db_erp.mst_inventory_product_uom
-CREATE TABLE IF NOT EXISTS `mst_inventory_product_uom` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `product_id` bigint unsigned NOT NULL,
-  `uom_id` bigint unsigned NOT NULL,
-  `conversion_rate` decimal(15,4) NOT NULL DEFAULT '1.0000',
-  `is_base` tinyint(1) NOT NULL DEFAULT '0',
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `mst_product_uom_product_id_foreign` (`product_id`),
-  KEY `mst_product_uom_uom_id_foreign` (`uom_id`),
-  CONSTRAINT `mst_product_uom_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `mst_inventory_product` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `mst_product_uom_uom_id_foreign` FOREIGN KEY (`uom_id`) REFERENCES `mst_inventory_uom` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Dumping data for table db_erp.mst_inventory_product_uom: ~5 rows (approximately)
-INSERT INTO `mst_inventory_product_uom` (`id`, `product_id`, `uom_id`, `conversion_rate`, `is_base`, `created_at`, `updated_at`) VALUES
-	(1, 7, 3, 10.0000, 1, '2026-01-29 10:43:23', '2026-01-29 10:43:23'),
-	(2, 8, 5, 12.0000, 1, '2026-01-29 10:53:28', '2026-01-29 10:53:28'),
-	(3, 8, 6, 50.0000, 0, '2026-01-29 10:53:28', '2026-01-29 10:53:28'),
-	(4, 10, 5, 12.0000, 1, '2026-01-31 08:13:21', '2026-01-31 08:13:21'),
-	(5, 10, 4, 1.0000, 0, '2026-01-31 08:13:21', '2026-01-31 08:13:21');
-
 -- Dumping structure for table db_erp.mst_inventory_storage
 CREATE TABLE IF NOT EXISTS `mst_inventory_storage` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `warehouse_id` bigint unsigned NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -377,7 +355,7 @@ CREATE TABLE IF NOT EXISTS `mst_inventory_storage` (
   CONSTRAINT `mst_storage_warehouse_id_foreign` FOREIGN KEY (`warehouse_id`) REFERENCES `mst_inventory_warehouse` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.mst_inventory_storage: ~0 rows (approximately)
+-- Dumping data for table db_erp.mst_inventory_storage: ~2 rows (approximately)
 INSERT INTO `mst_inventory_storage` (`id`, `code`, `name`, `warehouse_id`, `description`, `is_active`, `created_at`, `updated_at`) VALUES
 	(1, 'tes', 'tesssssqewqewqeqw', 1, 'tes', 0, '2026-02-01 09:56:41', '2026-02-01 09:56:53'),
 	(2, 'ST', 'New Storage', 2, 'Sadnksajdnasd', 0, '2026-05-17 07:50:06', '2026-05-17 07:50:21');
@@ -385,9 +363,9 @@ INSERT INTO `mst_inventory_storage` (`id`, `code`, `name`, `warehouse_id`, `desc
 -- Dumping structure for table db_erp.mst_inventory_uom
 CREATE TABLE IF NOT EXISTS `mst_inventory_uom` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -406,10 +384,10 @@ INSERT INTO `mst_inventory_uom` (`id`, `code`, `name`, `description`, `is_active
 -- Dumping structure for table db_erp.mst_inventory_warehouse
 CREATE TABLE IF NOT EXISTS `mst_inventory_warehouse` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `location_id` bigint unsigned NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -419,7 +397,7 @@ CREATE TABLE IF NOT EXISTS `mst_inventory_warehouse` (
   CONSTRAINT `mst_warehouse_location_id_foreign` FOREIGN KEY (`location_id`) REFERENCES `mst_organization_location` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.mst_inventory_warehouse: ~0 rows (approximately)
+-- Dumping data for table db_erp.mst_inventory_warehouse: ~2 rows (approximately)
 INSERT INTO `mst_inventory_warehouse` (`id`, `code`, `name`, `location_id`, `description`, `is_active`, `created_at`, `updated_at`) VALUES
 	(1, 'tes', 'tes wawa', 1, 'tes', 1, '2026-02-01 09:45:30', '2026-02-01 09:56:25'),
 	(2, 'NL', 'New Location', 3, 'jnfjdkfsndjf', 0, '2026-05-17 07:45:36', '2026-05-17 07:45:51');
@@ -427,11 +405,11 @@ INSERT INTO `mst_inventory_warehouse` (`id`, `code`, `name`, `location_id`, `des
 -- Dumping structure for table db_erp.mst_organization_company
 CREATE TABLE IF NOT EXISTS `mst_organization_company` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `address` text COLLATE utf8mb4_unicode_ci,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -451,9 +429,9 @@ INSERT INTO `mst_organization_company` (`id`, `name`, `code`, `email`, `phone`, 
 -- Dumping structure for table db_erp.mst_organization_department
 CREATE TABLE IF NOT EXISTS `mst_organization_department` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
+  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -461,18 +439,18 @@ CREATE TABLE IF NOT EXISTS `mst_organization_department` (
   UNIQUE KEY `department_code_unique` (`code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.mst_organization_department: ~2 rows (approximately)
+-- Dumping data for table db_erp.mst_organization_department: ~0 rows (approximately)
 INSERT INTO `mst_organization_department` (`id`, `code`, `name`, `description`, `is_active`, `created_at`, `updated_at`) VALUES
 	(5, 'FN', 'Finance', 'Finance Division', 1, '2026-05-15 22:31:24', '2026-05-15 22:31:24');
 
 -- Dumping structure for table db_erp.mst_organization_location
 CREATE TABLE IF NOT EXISTS `mst_organization_location` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` enum('BRANCH','AREA','WAREHOUSE','OFFICE') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` enum('BRANCH','AREA','WAREHOUSE','OFFICE') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `parent_id` bigint unsigned DEFAULT NULL,
-  `address` text COLLATE utf8mb4_unicode_ci,
+  `address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -487,12 +465,25 @@ INSERT INTO `mst_organization_location` (`id`, `code`, `name`, `type`, `parent_i
 	(1, 'asd', 'Warehouse 1', 'AREA', NULL, 'alamat', 1, '2026-01-19 09:55:58', '2026-01-19 09:57:56'),
 	(3, '123', 'asdasdas', 'WAREHOUSE', NULL, 'sdasdasda', 1, '2026-05-08 11:51:48', '2026-05-08 11:51:48');
 
+-- Dumping structure for table db_erp.mst_salesman_area
+CREATE TABLE IF NOT EXISTS `mst_salesman_area` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `salesman_id` bigint unsigned NOT NULL,
+  `sales_area_id` bigint unsigned NOT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table db_erp.mst_salesman_area: ~0 rows (approximately)
+
 -- Dumping structure for table db_erp.mst_sales_area
 CREATE TABLE IF NOT EXISTS `mst_sales_area` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
+  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -500,7 +491,7 @@ CREATE TABLE IF NOT EXISTS `mst_sales_area` (
   UNIQUE KEY `mst_sales_area_code_unique` (`code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.mst_sales_area: ~0 rows (approximately)
+-- Dumping data for table db_erp.mst_sales_area: ~2 rows (approximately)
 INSERT INTO `mst_sales_area` (`id`, `code`, `name`, `description`, `is_active`, `created_at`, `updated_at`) VALUES
 	(1, 'TES', 'tos', 'tes', 0, '2026-02-06 09:42:43', '2026-02-06 09:42:58'),
 	(2, 'bubu', 'vvuvu', 'vuvu', 1, '2026-02-06 11:51:40', '2026-02-06 11:51:40');
@@ -508,13 +499,13 @@ INSERT INTO `mst_sales_area` (`id`, `code`, `name`, `description`, `is_active`, 
 -- Dumping structure for table db_erp.mst_sales_customer
 CREATE TABLE IF NOT EXISTS `mst_sales_customer` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `customer_category_id` bigint unsigned NOT NULL,
   `location_id` bigint unsigned DEFAULT NULL,
-  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `address` text COLLATE utf8mb4_unicode_ci,
+  `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -533,9 +524,9 @@ INSERT INTO `mst_sales_customer` (`id`, `code`, `name`, `customer_category_id`, 
 -- Dumping structure for table db_erp.mst_sales_customer_category
 CREATE TABLE IF NOT EXISTS `mst_sales_customer_category` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -543,17 +534,17 @@ CREATE TABLE IF NOT EXISTS `mst_sales_customer_category` (
   UNIQUE KEY `mst_sales_customer_category_code_unique` (`code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.mst_sales_customer_category: ~1 rows (approximately)
+-- Dumping data for table db_erp.mst_sales_customer_category: ~0 rows (approximately)
 INSERT INTO `mst_sales_customer_category` (`id`, `code`, `name`, `description`, `is_active`, `created_at`, `updated_at`) VALUES
 	(1, 'tos', 'tes', 'rwa', 1, '2026-02-01 10:45:50', '2026-02-03 09:32:51');
 
 -- Dumping structure for table db_erp.mst_sales_salesman
 CREATE TABLE IF NOT EXISTS `mst_sales_salesman` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `code` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `code` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -561,7 +552,7 @@ CREATE TABLE IF NOT EXISTS `mst_sales_salesman` (
   UNIQUE KEY `mst_sales_salesman_code_unique` (`code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.mst_sales_salesman: ~0 rows (approximately)
+-- Dumping data for table db_erp.mst_sales_salesman: ~2 rows (approximately)
 INSERT INTO `mst_sales_salesman` (`id`, `code`, `name`, `phone`, `email`, `is_active`, `created_at`, `updated_at`) VALUES
 	(2, 'SM20260001', 'SEPTIAN', '082123063600', 'septian@gmail.com', 0, '2026-02-03 10:26:51', '2026-02-03 10:26:57'),
 	(3, 'tessss', 'SEPTIAN', '082123063600', 'septian@gmail.com', 1, '2026-02-06 11:51:16', '2026-02-06 11:51:16');
@@ -585,8 +576,8 @@ CREATE TABLE IF NOT EXISTS `mst_sales_salesman_area` (
 
 -- Dumping structure for table db_erp.password_reset_tokens
 CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -596,8 +587,8 @@ CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
 -- Dumping structure for table db_erp.permissions
 CREATE TABLE IF NOT EXISTS `permissions` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guard_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -614,11 +605,11 @@ INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at
 -- Dumping structure for table db_erp.personal_access_tokens
 CREATE TABLE IF NOT EXISTS `personal_access_tokens` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tokenable_type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tokenable_id` bigint unsigned NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `token` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `abilities` text COLLATE utf8mb4_unicode_ci,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `abilities` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `last_used_at` timestamp NULL DEFAULT NULL,
   `expires_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
@@ -633,9 +624,9 @@ CREATE TABLE IF NOT EXISTS `personal_access_tokens` (
 -- Dumping structure for table db_erp.roles
 CREATE TABLE IF NOT EXISTS `roles` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `description` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
@@ -643,7 +634,7 @@ CREATE TABLE IF NOT EXISTS `roles` (
   UNIQUE KEY `roles_code_unique` (`code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.roles: ~0 rows (approximately)
+-- Dumping data for table db_erp.roles: ~2 rows (approximately)
 INSERT INTO `roles` (`id`, `name`, `code`, `description`, `is_active`, `created_at`, `updated_at`) VALUES
 	(3, 'test', 'test', 'test', 1, '2026-01-12 04:34:31', '2026-01-12 04:34:31'),
 	(4, 'test2', 't2', 'twest', 1, '2026-01-17 10:49:04', '2026-01-17 10:49:04');
@@ -658,7 +649,7 @@ CREATE TABLE IF NOT EXISTS `role_has_permissions` (
   CONSTRAINT `role_has_permissions_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table db_erp.role_has_permissions: ~6 rows (approximately)
+-- Dumping data for table db_erp.role_has_permissions: ~0 rows (approximately)
 
 -- Dumping structure for table db_erp.role_user
 CREATE TABLE IF NOT EXISTS `role_user` (
@@ -677,11 +668,11 @@ CREATE TABLE IF NOT EXISTS `role_user` (
 -- Dumping structure for table db_erp.users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `remember_token` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),

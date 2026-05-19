@@ -38,9 +38,9 @@ class ProductController extends Controller
         return Inertia::render('Master/Inventory/Product/Index', [
             'products' => $products,
             'filters' => [
-                'search'  => $request->search,
+                'search' => $request->search,
                 'entries' => $entries,
-                'status'  => $request->status,
+                'status' => $request->status,
             ],
         ]);
     }
@@ -91,22 +91,23 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($hash) // Ganti parameter jadi $hash
+    public function edit($hash)
     {
-        // 1. Decode hasilnya
+        // Decode hasilnya
         $decoded = Hashids::decode($hash);
 
-        // 2. Jika ada orang iseng merubah URL hash secara asal, gagalkan (404)
         if (empty($decoded)) {
             abort(404);
         }
 
-        // 3. Ambil indeks ke-0 (ID aslinya)
         $real_id = $decoded[0];
-        $product = Product::findOrFail($real_id);
+
+        $product = Product::with('productUoms.uom')
+            ->findOrFail($real_id);
 
         return Inertia::render('Master/Inventory/Product/Edit', [
             'product' => $product,
+
             'categories' => Category::select('id', 'name')->get(),
             'brands' => Brand::select('id', 'name')->get(),
             'uoms' => Uom::select('id', 'name')->get(),
@@ -117,7 +118,8 @@ class ProductController extends Controller
     public function update(Request $request, $hash) // Ganti parameter jadi $hash
     {
         $decoded = Hashids::decode($hash);
-        if (empty($decoded)) abort(404);
+        if (empty($decoded))
+            abort(404);
 
         $product = Product::findOrFail($decoded[0]);
 
@@ -143,7 +145,8 @@ class ProductController extends Controller
     public function destroy($hash) // Ganti parameter jadi $hash
     {
         $decoded = Hashids::decode($hash);
-        if (empty($decoded)) abort(404);
+        if (empty($decoded))
+            abort(404);
 
         $product = Product::findOrFail($decoded[0]);
         $product->update(['is_active' => false]);

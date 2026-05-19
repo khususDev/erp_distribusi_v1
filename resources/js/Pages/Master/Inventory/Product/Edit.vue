@@ -41,6 +41,13 @@ const form = useForm({
     selling_price: props.product.selling_price,
 
     description: props.product.description,
+    product_uoms:
+        props.product.product_uoms?.map((item) => ({
+            id: item.id,
+            uom_id: item.uom_id,
+            conversion_rate: item.conversion_rate,
+            is_base: item.is_base,
+        })) ?? [],
 });
 
 const submit = () => {
