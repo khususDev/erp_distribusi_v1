@@ -18,9 +18,13 @@ class CustomerCategory extends Model
         'is_active',
     ];
 
-    // scope standar (kamu sudah sering pakai)
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
     }
+
 }

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Master\Finance;
 
 use App\Http\Controllers\Controller;
-use App\Models\Master\Finance\PaymentMethod;
+use App\Models\Master\Finance\Bank;
+use App\Models\Master\Finance\ChartAccount;
+use App\Models\Master\Finance\Currency;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class PaymentMethodController extends Controller
+class BankController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +18,7 @@ class PaymentMethodController extends Controller
     {
         $entries = $request->entries ?? 10;
 
-        $paymentMethods = PaymentMethod::query()
+        $banks = Bank::with(['currency', 'coa'])
 
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -25,20 +27,19 @@ class PaymentMethodController extends Controller
                 });
             })
 
-            ->when($request->status !== null && $request->status !== '', function ($query) use ($request) {
-                $query->where('is_active', $request->status);
-            })
-
             ->paginate($entries)
             ->appends($request->query());
 
-        return Inertia::render('Master/Finance/PaymentMethod/Index', [
-            'paymentMethods' => $paymentMethods,
+        return Inertia::render('Master/Finance/Bank/Index', [
+            'banks' => $banks,
+
+            'currencies' => Currency::active()->get(),
+
+            'coas' => ChartAccount::active()->get(),
 
             'filters' => [
                 'search' => $request->search,
                 'entries' => $entries,
-                'status' => $request->status,
             ],
         ]);
     }
@@ -57,13 +58,13 @@ class PaymentMethodController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|unique:mst_finance_payment_method,code',
+            'code' => 'required|unique:mst_finance_bank,code',
             'name' => 'required',
         ]);
 
-        PaymentMethod::create($request->all());
+        Bank::create($request->all());
 
-        return back()->with('success', 'Payment Method berhasil ditambahkan');
+        return back()->with('success', 'Bank berhasil ditambahkan');
     }
 
     /**
@@ -85,27 +86,27 @@ class PaymentMethodController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, PaymentMethod $paymentMethod)
+    public function update(Request $request, Bank $bank)
     {
         $request->validate([
-            'code' => 'required|unique:mst_finance_payment_method,code,' . $paymentMethod->id,
+            'code' => 'required|unique:mst_finance_bank,code,' . $bank->id,
             'name' => 'required',
         ]);
 
-        $paymentMethod->update($request->all());
+        $bank->update($request->all());
 
-        return back()->with('success', 'Payment Method berhasil diperbarui');
+        return back()->with('success', 'Bank berhasil diperbarui');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PaymentMethod $paymentMethod)
+    public function destroy(Bank $bank)
     {
-        $paymentMethod->update([
+        $bank->update([
             'is_active' => false
         ]);
 
-        return back()->with('success', 'Payment Method berhasil dihapus');
+        return back()->with('success', 'Bank berhasil dinonaktifkan');
     }
 }

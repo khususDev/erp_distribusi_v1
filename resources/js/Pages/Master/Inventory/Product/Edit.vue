@@ -5,7 +5,8 @@ import PrimaryButton from "@/Components/Button/PrimaryButton.vue";
 
 import ProductForm from "./Partials/ProductForm.vue";
 
-import { useForm } from "@inertiajs/vue3";
+import { useForm, router } from "@inertiajs/vue3";
+import SecondaryButton from "@/Components/Button/SecondaryButton.vue";
 
 const props = defineProps({
     product: Object,
@@ -41,17 +42,14 @@ const form = useForm({
     selling_price: props.product.selling_price,
 
     description: props.product.description,
-    product_uoms:
-        props.product.product_uoms?.map((item) => ({
-            id: item.id,
-            uom_id: item.uom_id,
-            conversion_rate: item.conversion_rate,
-            is_base: item.is_base,
-        })) ?? [],
+    product_uoms: props.product.product_uoms ?? [],
 });
 
 const submit = () => {
     form.put(`/mst_inv_product/${props.product.hash_id}`);
+};
+const cancel = () => {
+    router.get("/mst_inv_product");
 };
 </script>
 
@@ -74,6 +72,7 @@ const submit = () => {
             />
 
             <div class="mt-6 flex justify-end gap-3">
+                <SecondaryButton @click="cancel"> Cancel </SecondaryButton>
                 <PrimaryButton @click="submit"> Update Product </PrimaryButton>
             </div>
         </div>

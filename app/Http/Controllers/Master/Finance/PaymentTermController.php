@@ -12,10 +12,34 @@ class PaymentTermController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $entries = $request->entries ?? 10;
+
+        $paymentTerms = PaymentTerm::query()
+
+            ->when($request->search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('code', 'like', "%{$search}%");
+                });
+            })
+
+            ->when($request->status !== null && $request->status !== '', function ($query) use ($request) {
+                $query->where('is_active', $request->status);
+            })
+
+            ->paginate($entries)
+            ->appends($request->query());
+
         return Inertia::render('Master/Finance/PaymentTerm/Index', [
-            'paymentTerms' => PaymentTerm::orderBy('name')->get(),
+            'paymentTerms' => $paymentTerms,
+
+            'filters' => [
+                'search' => $request->search,
+                'entries' => $entries,
+                'status' => $request->status,
+            ],
         ]);
     }
 
@@ -65,6 +89,7 @@ class PaymentTermController extends Controller
     public function update(Request $request, PaymentTerm $paymentTerm)
     {
         $request->validate([
+            'code' => 'required|unique:mst_finance_payment_term,code,' . $paymentTerm->id,
             'name' => 'required',
             'days' => 'required|integer|min:0',
         ]);

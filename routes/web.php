@@ -4,6 +4,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Management\MenuPermissionController;
 use App\Http\Controllers\Management\UserController;
 use App\Http\Controllers\Management\RoleController;
+use App\Http\Controllers\Master\Finance\BankController;
+use App\Http\Controllers\Master\Finance\ChartAccountController;
 use App\Http\Controllers\Master\Organization\CompanyController;
 use App\Http\Controllers\Master\Organization\DepartmentController;
 use App\Http\Controllers\Master\Organization\LocationController;
@@ -126,6 +128,16 @@ Route::middleware(['auth', 'menu.permission'])->group(function () {
     Route::post('/mst_fin_payment_term', [PaymentTermController::class, 'store']);
     Route::put('/mst_fin_payment_term/{paymentTerm}', [PaymentTermController::class, 'update']);
     Route::delete('/mst_fin_payment_term/{paymentTerm}', [PaymentTermController::class, 'destroy']);
+
+    Route::get('/mst_fin_chart_account', [ChartAccountController::class, 'index'])->name('mst_fin_chart_account');
+    Route::post('/mst_fin_chart_account', [ChartAccountController::class, 'store']);
+    Route::put('/mst_fin_chart_account/{chartAccount}', [ChartAccountController::class, 'update']);
+    Route::delete('/mst_fin_chart_account/{chartAccount}', [ChartAccountController::class, 'destroy']);
+
+    Route::get('/mst_fin_bank', [BankController::class, 'index'])->name('mst_fin_bank');
+    Route::post('/mst_fin_bank', [BankController::class, 'store']);
+    Route::put('/mst_fin_bank/{bank}', [BankController::class, 'update']);
+    Route::delete('/mst_fin_bank/{bank}', [BankController::class, 'destroy']);
 
     Route::get('/mst_sls_customer_category', [CustomerCategoryController::class, 'index'])->name('mst_sls_customer_category');
     Route::post('/mst_sls_customer_category', [CustomerCategoryController::class, 'store']);

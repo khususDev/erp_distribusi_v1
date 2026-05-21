@@ -12,18 +12,20 @@ const showToast = ref(false);
 const message = ref("");
 
 watch(
-    () => page.props.flash?.success, // Tambahkan tanda tanya (?) di sini
+    () => page.props.flash?.success,
     (msg) => {
         if (msg) {
             message.value = msg;
             showToast.value = true;
 
-            // Bersihkan flash message setelah ditampilkan agar tidak muncul lagi saat navigasi balik
-            // (Opsional, tergantung kebutuhan logic UX Anda)
-
             setTimeout(() => {
                 showToast.value = false;
                 message.value = "";
+
+                // PENTING: Bersihkan data langsung di pusat state Inertia
+                if (page.props.flash) {
+                    page.props.flash.success = null;
+                }
             }, 3000);
         }
     },

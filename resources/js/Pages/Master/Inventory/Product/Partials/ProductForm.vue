@@ -148,17 +148,16 @@ const taxOptions = computed(() =>
 
                 <tbody>
                     <tr
-                        v-for="(item, index) in props.form.product_uoms"
+                        v-for="(item, index) in form.product_uoms"
                         :key="index"
                         class="border-t border-stroke dark:border-strokedark"
                     >
                         <!-- UOM -->
                         <td class="px-4 py-3">
                             <FormSelect
-                                label="Base UOM"
-                                v-model="form.uom_id"
+                                v-model="item.uom_id"
                                 :options="uomOptions"
-                                :error="form.errors.uom_id"
+                                placeholder="Select UOM"
                             />
                         </td>
 

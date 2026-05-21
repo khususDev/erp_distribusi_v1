@@ -1,245 +1,230 @@
 <script setup>
 import AppLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { ref } from "vue";
-import { router } from "@inertiajs/vue3";
+import Breadcrumb from "@/Components/Page/Breadcrumb.vue"; // Pastikan path benar
+import DataTable from "@/Components/Table/DataTable.vue";
+import Pagination from "@/Components/Table/Pagination.vue";
+import TableAction from "@/Components/Table/TableAction.vue";
+import TableEmpty from "@/Components/Table/TableEmpty.vue";
+import TableLoading from "@/Components/Table/TableLoading.vue";
+import FormInput from "@/Components/Form/FormInput.vue";
+import FormCheckbox from "@/Components/Form/FormCheckbox.vue";
+import Modal from "@/Components/Modal/Modal.vue";
+import PrimaryButton from "@/Components/Button/PrimaryButton.vue";
+import StatusBadge from "@/Components/Badge/StatusBadge.vue";
+import useCrud from "@/Composables/useCrud";
+import ConfirmModal from "@/Components/Modal/ConfirmModal.vue";
+import useTable from "@/Composables/useTable";
+import FilterSelect from "@/Components/Filter/FilterSelect.vue";
 
 const props = defineProps({
-    paymentTerms: Array,
+    paymentTerms: Object,
+    filters: Object,
 });
 
-const showModal = ref(false);
-const isEdit = ref(false);
-
-const form = ref({
-    id: null,
-    code: "",
-    name: "",
-    days: 0,
-    description: "",
-    is_active: true,
-});
-
-function openCreate() {
-    isEdit.value = false;
-
-    form.value = {
-        id: null,
+const {
+    form,
+    showModal,
+    showDeleteModal,
+    isEdit,
+    loading,
+    openCreate,
+    openEdit,
+    submit,
+    openDelete,
+    closeDeleteModal,
+    confirmDelete,
+    closeModal,
+} = useCrud({
+    initialForm: {
         code: "",
         name: "",
-        days: 0,
+        days: "",
         description: "",
         is_active: true,
-    };
+    },
+    storeRoute: "/mst_fin_payment_term",
+    updateRoute: "/mst_fin_payment_term",
+    deleteRoute: "/mst_fin_payment_term",
+    deleteMessage: "Hapus payment term ini?",
+});
 
-    showModal.value = true;
-}
-
-function openEdit(p) {
-    isEdit.value = true;
-    form.value = { ...p };
-    showModal.value = true;
-}
-
-function submit() {
-    if (isEdit.value) {
-        router.put(`/mst_fin_payment_term/${form.value.id}`, form.value, {
-            onSuccess: () => (showModal.value = false),
-        });
-    } else {
-        router.post("/mst_fin_payment_term", form.value, {
-            onSuccess: () => (showModal.value = false),
-        });
-    }
-}
-
-function destroy(p) {
-    if (confirm(`Nonaktifkan payment term "${p.name}" ?`)) {
-        router.delete(`/mst_fin_payment_term/${p.id}`);
-    }
-}
+const { search, entries, filters } = useTable({
+    route: "/mst_fin_payment_term",
+    search: props.filters?.search ?? "",
+    entries: props.filters?.entries ?? 10,
+    filters: { status: props.filters?.status ?? "" },
+});
 </script>
 
 <template>
     <AppLayout>
-        <section class="section">
-            <div class="card">
-                <!-- HEADER -->
-                <div
-                    class="card-header d-flex justify-content-between align-items-center p-1 pl-3 pr-3"
-                >
-                    <h6 class="section-title">Master Payment Term</h6>
-
-                    <button class="btn btn-primary btn-sm" @click="openCreate">
-                        <i class="fas fa-plus"></i> Tambah Payment Term
-                    </button>
-                </div>
-
-                <!-- TABLE -->
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-striped mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Kode</th>
-                                    <th>Nama</th>
-                                    <th>Hari</th>
-                                    <th>Deskripsi</th>
-                                    <th>Status</th>
-                                    <th width="120">Aksi</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <tr v-for="p in paymentTerms" :key="p.id">
-                                    <td>{{ p.code }}</td>
-                                    <td>{{ p.name }}</td>
-                                    <td>{{ p.days }} Hari</td>
-                                    <td>{{ p.description }}</td>
-
-                                    <td>
-                                        <span
-                                            :class="
-                                                p.is_active
-                                                    ? 'badge badge-success'
-                                                    : 'badge badge-danger'
-                                            "
-                                        >
-                                            {{
-                                                p.is_active
-                                                    ? "Aktif"
-                                                    : "Nonaktif"
-                                            }}
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        <button
-                                            class="btn btn-sm btn-warning mr-1"
-                                            @click="openEdit(p)"
-                                        >
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-
-                                        <button
-                                            class="btn btn-sm btn-danger"
-                                            @click="destroy(p)"
-                                        >
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-
-                                <tr v-if="paymentTerms.length === 0">
-                                    <td
-                                        colspan="6"
-                                        class="text-center text-muted"
-                                    >
-                                        Data payment term belum tersedia
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- MODAL -->
-        <div
-            class="modal fade show"
-            tabindex="-1"
-            style="display: block; background: rgba(0, 0, 0, 0.5)"
-            v-if="showModal"
+        <!-- Sesuaikan Halaman -->
+        <Breadcrumb
+            pageTitle="Payment Term"
+            :crumbs="['Master Data', 'Finance']"
+        />
+        <DataTable
+            :headers="[
+                'Code',
+                'Term Name',
+                'Net Days',
+                'Description',
+                'Status',
+                'Action',
+            ]"
+            :from="paymentTerms.from"
+            :to="paymentTerms.to"
+            :total="paymentTerms.total"
+            :search="search"
+            :entries="entries"
+            @search="search = $event"
+            @update:entries="entries = $event"
         >
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            {{
-                                isEdit
-                                    ? "Edit Payment Term"
-                                    : "Tambah Payment Term"
-                            }}
-                        </h5>
+            <!-- SLOT ATAS: UNTUK TOMBOL AKSI -->
+            <template #top-actions>
+                <PrimaryButton @click="openCreate" size="sm">
+                    Tambah Payment Term
+                </PrimaryButton>
+                <div class="h-6 w-px bg-stroke dark:bg-strokedark mx-1"></div>
+                <PrimaryButton size="sm" class="!bg-slate-500"
+                    >Import</PrimaryButton
+                >
+                <PrimaryButton size="sm" class="!bg-slate-500"
+                    >Export</PrimaryButton
+                >
+            </template>
 
-                        <button
-                            type="button"
-                            class="close"
-                            @click="showModal = false"
-                        >
-                            <span>&times;</span>
-                        </button>
-                    </div>
+            <!-- SLOT KANAN: UNTUK FILTER -->
+            <!-- <template #right-actions>
+                <FilterSelect
+                    v-model="filters.status"
+                    class="w-40"
+                    placeholder="Semua Status"
+                    :options="[
+                        { label: 'Active', value: 1 },
+                        { label: 'Inactive', value: 0 },
+                    ]"
+                />
+            </template> -->
 
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label>Kode</label>
+            <!-- TABLE BODY -->
+            <TableLoading v-if="loading" :rows="5" :cols="5" />
 
-                            <input
-                                type="text"
-                                class="form-control"
-                                v-model="form.code"
-                                :disabled="isEdit"
-                            />
-                        </div>
+            <tr
+                v-else
+                v-for="paymentTerm in paymentTerms.data"
+                :key="paymentTerm.id"
+                class="border-b border-stroke dark:border-strokedark"
+            >
+                <td
+                    class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
+                >
+                    <h5 class="font-medium text-black dark:text-white">
+                        {{ paymentTerm.code }}
+                    </h5>
+                </td>
 
-                        <div class="form-group">
-                            <label>Nama</label>
+                <td
+                    class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
+                >
+                    <h5 class="font-medium text-black dark:text-white">
+                        {{ paymentTerm.name }}
+                    </h5>
+                </td>
 
-                            <input
-                                type="text"
-                                class="form-control"
-                                v-model="form.name"
-                            />
-                        </div>
+                <td
+                    class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
+                >
+                    <h5 class="font-medium text-black dark:text-white">
+                        {{ paymentTerm.days }} days
+                    </h5>
+                </td>
 
-                        <div class="form-group">
-                            <label>Jumlah Hari</label>
+                <td
+                    class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
+                >
+                    <h5 class="font-medium text-black dark:text-white">
+                        {{ paymentTerm.description }}
+                    </h5>
+                </td>
 
-                            <input
-                                type="number"
-                                class="form-control"
-                                v-model="form.days"
-                            />
-                        </div>
+                <td
+                    class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
+                >
+                    <StatusBadge :active="paymentTerm.is_active" />
+                </td>
 
-                        <div class="form-group">
-                            <label>Deskripsi</label>
+                <td
+                    class="border-r border-stroke px-4 py-5 text-center last:border-r-0 dark:border-strokedark"
+                >
+                    <TableAction
+                        @edit="openEdit(paymentTerm)"
+                        @delete="openDelete(paymentTerm.id)"
+                    />
+                </td>
+            </tr>
 
-                            <textarea
-                                class="form-control"
-                                v-model="form.description"
-                            ></textarea>
-                        </div>
+            <TableEmpty
+                v-if="!loading && paymentTerms.data.length === 0"
+                :colspan="5"
+            />
 
-                        <div class="custom-control custom-checkbox">
-                            <input
-                                type="checkbox"
-                                id="is_active"
-                                class="custom-control-input"
-                                v-model="form.is_active"
-                            />
+            <template #pagination>
+                <Pagination :links="paymentTerms.links" />
+            </template>
+        </DataTable>
 
-                            <label class="custom-control-label" for="is_active">
-                                Aktif
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button
-                            class="btn btn-secondary"
-                            @click="showModal = false"
-                        >
-                            Batal
-                        </button>
-
-                        <button class="btn btn-primary" @click="submit">
-                            Simpan
-                        </button>
-                    </div>
-                </div>
+        <!-- MODALS (Tetap Sama) -->
+        <Modal
+            :show="showModal"
+            :title="isEdit ? 'Edit Payment Term' : 'Tambah Payment Term'"
+            @close="closeModal"
+        >
+            <!-- ... isi form modal Anda ... -->
+            <div class="p-6 flex flex-col gap-4">
+                <FormInput
+                    label="Term Name"
+                    v-model="form.name"
+                    :error="form.errors.name"
+                />
+                <FormInput
+                    label="Code"
+                    v-model="form.code"
+                    :error="form.errors.code"
+                    :disabled="isEdit"
+                />
+                <FormInput
+                    label="Net Days"
+                    v-model="form.days"
+                    :error="form.errors.days"
+                    :disabled="isEdit"
+                />
+                <FormInput
+                    label="Description"
+                    v-model="form.description"
+                    :error="form.errors.description"
+                />
+                <FormCheckbox label="Active" v-model="form.is_active" />
             </div>
-        </div>
+            <template #footer>
+                <div class="flex items-center justify-end gap-3 p-6">
+                    <button
+                        @click="closeModal"
+                        class="px-4 py-2 text-black dark:text-white"
+                    >
+                        Cancel
+                    </button>
+                    <PrimaryButton @click="submit" :disabled="loading">{{
+                        loading ? "Saving..." : "Simpan"
+                    }}</PrimaryButton>
+                </div>
+            </template>
+        </Modal>
+
+        <ConfirmModal
+            :show="showDeleteModal"
+            @close="closeDeleteModal"
+            @confirm="confirmDelete"
+        />
     </AppLayout>
 </template>

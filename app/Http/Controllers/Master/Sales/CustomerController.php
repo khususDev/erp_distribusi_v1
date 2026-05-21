@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Master\Sales;
 
 use App\Http\Controllers\Controller;
+use App\Models\Master\Finance\Currency;
+use App\Models\Master\Finance\PaymentTerm;
 use App\Models\Master\Organization\Location;
+use App\Models\Master\Sales\Area;
 use App\Models\Master\Sales\Customer;
 use App\Models\Master\Sales\CustomerCategory;
 use Illuminate\Http\Request;
@@ -14,15 +17,60 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia('Master/Sales/Customer/Index', [
-            'customers' => Customer::with(['category', 'location'])
+        $entries = $request->entries ?? 10;
+
+        $customers = Customer::with([
+            'category',
+            'salesArea',
+            'paymentTerm',
+            'currency'
+        ])
+
+            ->when($request->search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('code', 'like', "%{$search}%")
+                        ->orWhere('name', 'like', "%{$search}%");
+                });
+            })
+
+            ->when($request->status !== null && $request->status !== '', function ($query) use ($request) {
+                $query->where('is_active', $request->status);
+            })
+
+            ->orderBy('name')
+            ->paginate($entries)
+            ->appends($request->query());
+
+        return Inertia::render('Master/Sales/Customer/Index', [
+            'customers' => $customers,
+
+            'categories' => CustomerCategory::active()
+                ->select('id', 'name')
                 ->orderBy('name')
                 ->get(),
 
-            'categories' => CustomerCategory::active()->get(),
-            'locations' => Location::active()->get(),
+            'areas' => Area::active()
+                ->select('id', 'name')
+                ->orderBy('name')
+                ->get(),
+
+            'paymentTerms' => PaymentTerm::active()
+                ->select('id', 'name')
+                ->orderBy('name')
+                ->get(),
+
+            'currencies' => Currency::where('is_active', true)
+                ->select('id', 'name')
+                ->orderBy('name')
+                ->get(),
+
+            'filters' => [
+                'search' => $request->search,
+                'entries' => $entries,
+                'status' => $request->status,
+            ],
         ]);
     }
 
@@ -42,10 +90,11 @@ class CustomerController extends Controller
         $request->validate([
             'code' => 'required|unique:mst_sales_customer,code',
             'name' => 'required',
-            'customer_category_id' => 'required',
         ]);
 
         Customer::create($request->all());
+
+        return back()->with('success', 'Customer berhasil ditambahkan');
     }
 
     /**
@@ -75,6 +124,8 @@ class CustomerController extends Controller
         ]);
 
         $customer->update($request->all());
+
+        return back()->with('success', 'Customer berhasil diperbarui');
     }
 
     /**

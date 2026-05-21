@@ -16,9 +16,6 @@ class ProductUom extends Model
         'uom_id',
         'conversion_rate',
         'is_base',
-        'barcode',
-        'purchase_price',
-        'selling_price',
     ];
 
     public function product()

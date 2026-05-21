@@ -1,244 +1,283 @@
 <script setup>
 import AppLayout from "@/Layouts/AuthenticatedLayout.vue";
-import { ref } from "vue";
-import { router } from "@inertiajs/vue3";
+import Breadcrumb from "@/Components/Page/Breadcrumb.vue";
+import DataTable from "@/Components/Table/DataTable.vue";
+import Pagination from "@/Components/Table/Pagination.vue";
+import TableAction from "@/Components/Table/TableAction.vue";
+import TableEmpty from "@/Components/Table/TableEmpty.vue";
+import TableLoading from "@/Components/Table/TableLoading.vue";
+
+import FormInput from "@/Components/Form/FormInput.vue";
+import FormCheckbox from "@/Components/Form/FormCheckbox.vue";
+import FormSelect from "@/Components/Form/FormSelect.vue";
+import FormTextarea from "@/Components/Form/FormTextarea.vue";
+
+import Modal from "@/Components/Modal/Modal.vue";
+import ConfirmModal from "@/Components/Modal/ConfirmModal.vue";
+
+import PrimaryButton from "@/Components/Button/PrimaryButton.vue";
+import StatusBadge from "@/Components/Badge/StatusBadge.vue";
+
+import useCrud from "@/Composables/useCrud";
+import useTable from "@/Composables/useTable";
+
+import { computed } from "vue";
 
 const props = defineProps({
-    customers: Array,
+    customers: Object,
+    areas: Array,
     categories: Array,
-    locations: Array,
+    paymentTerms: Array,
+    filters: Object,
 });
 
-const showModal = ref(false);
-const isEdit = ref(false);
-
-const form = ref({
-    id: null,
-    code: "",
-    name: "",
-    customer_category_id: "",
-    location_id: "",
-    phone: "",
-    email: "",
-    address: "",
-    is_active: true,
-});
-
-function openCreate() {
-    isEdit.value = false;
-    form.value = {
-        id: null,
+const {
+    form,
+    showModal,
+    showDeleteModal,
+    isEdit,
+    loading,
+    openCreate,
+    openEdit,
+    submit,
+    openDelete,
+    closeDeleteModal,
+    confirmDelete,
+    closeModal,
+} = useCrud({
+    initialForm: {
         code: "",
         name: "",
         customer_category_id: "",
-        location_id: "",
+        sales_area_id: "",
+
         phone: "",
         email: "",
         address: "",
+
+        pic_name: "",
+        tax_number: "",
+
+        payment_term_id: "",
+        credit_limit: 0,
+
         is_active: true,
-    };
-    showModal.value = true;
-}
+    },
 
-function openEdit(c) {
-    isEdit.value = true;
-    form.value = { ...c };
-    showModal.value = true;
-}
+    storeRoute: "/mst_sls_customer",
+    updateRoute: "/mst_sls_customer",
+    deleteRoute: "/mst_sls_customer",
 
-function submit() {
-    if (isEdit.value) {
-        router.put(`/mst_sales_customer/${form.value.id}`, form.value, {
-            onSuccess: () => (showModal.value = false),
-        });
-    } else {
-        router.post("/mst_sales_customer", form.value, {
-            onSuccess: () => (showModal.value = false),
-        });
-    }
-}
+    deleteMessage: "Hapus customer ini?",
+});
 
-function destroy(c) {
-    if (confirm(`Nonaktifkan customer "${c.name}" ?`)) {
-        router.delete(`/mst_sales_customer/${c.id}`);
-    }
-}
+const areaOptions = computed(() =>
+    props.areas.map((item) => ({
+        label: item.name,
+        value: item.id,
+    })),
+);
+
+const categoryOptions = computed(() =>
+    props.categories.map((item) => ({
+        label: item.name,
+        value: item.id,
+    })),
+);
+
+const paymentTermOptions = computed(() =>
+    props.paymentTerms.map((item) => ({
+        label: item.name,
+        value: item.id,
+    })),
+);
+
+const { search, entries } = useTable({
+    route: "/mst_sls_customer",
+    search: props.filters?.search ?? "",
+    entries: props.filters?.entries ?? 10,
+});
 </script>
 
 <template>
     <AppLayout>
-        <section class="section">
-            <div class="card">
-                <!-- HEADER -->
-                <div class="card-header d-flex justify-content-between p-2">
-                    <h6 class="mb-0">Master Customer</h6>
-                    <button class="btn btn-primary btn-sm" @click="openCreate">
-                        <i class="fas fa-plus"></i> Tambah Customer
-                    </button>
-                </div>
+        <Breadcrumb pageTitle="Customer" :crumbs="['Master Data', 'Sales']" />
 
-                <!-- TABLE -->
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-striped mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Kode</th>
-                                    <th>Nama</th>
-                                    <th>Kategori</th>
-                                    <th>Lokasi</th>
-                                    <th>Status</th>
-                                    <th width="120">Aksi</th>
-                                </tr>
-                            </thead>
+        <DataTable
+            :headers="[
+                'Code',
+                'Customer Name',
+                'Category',
+                'Area',
+                'Phone',
+                'Status',
+                'Action',
+            ]"
+            :from="customers.from"
+            :to="customers.to"
+            :total="customers.total"
+            :search="search"
+            :entries="entries"
+            @search="search = $event"
+            @update:entries="entries = $event"
+        >
+            <template #top-actions>
+                <PrimaryButton @click="openCreate" size="sm">
+                    Tambah Customer
+                </PrimaryButton>
+            </template>
 
-                            <tbody>
-                                <tr v-for="c in customers" :key="c.id">
-                                    <td>{{ c.code }}</td>
-                                    <td>{{ c.name }}</td>
-                                    <td>{{ c.category?.name }}</td>
-                                    <td>{{ c.location?.name ?? "-" }}</td>
-                                    <td>
-                                        <span
-                                            :class="
-                                                c.is_active
-                                                    ? 'badge badge-success'
-                                                    : 'badge badge-danger'
-                                            "
-                                        >
-                                            {{
-                                                c.is_active
-                                                    ? "Aktif"
-                                                    : "Nonaktif"
-                                            }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <button
-                                            class="btn btn-sm btn-warning mr-1"
-                                            @click="openEdit(c)"
-                                        >
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button
-                                            class="btn btn-sm btn-danger"
-                                            @click="destroy(c)"
-                                        >
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+            <TableLoading v-if="loading" :rows="5" :cols="7" />
 
-                                <tr v-if="customers.length === 0">
-                                    <td
-                                        colspan="6"
-                                        class="text-center text-muted"
-                                    >
-                                        Data customer belum tersedia
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
+            <tr
+                v-else
+                v-for="customer in customers.data"
+                :key="customer.id"
+                class="border-b border-stroke dark:border-strokedark"
+            >
+                <td class="px-4 py-4 text-center">
+                    {{ customer.code }}
+                </td>
+
+                <td class="px-4 py-4">
+                    {{ customer.name }}
+                </td>
+
+                <td class="px-4 py-4 text-center">
+                    {{ customer.category?.name }}
+                </td>
+
+                <td class="px-4 py-4 text-center">
+                    {{ customer.salesArea?.name }}
+                </td>
+
+                <td class="px-4 py-4 text-center">
+                    {{ customer.phone }}
+                </td>
+
+                <td class="px-4 py-4 text-center">
+                    <StatusBadge :active="customer.is_active" />
+                </td>
+
+                <td class="px-4 py-4 text-center">
+                    <TableAction
+                        @edit="openEdit(customer)"
+                        @delete="openDelete(customer.id)"
+                    />
+                </td>
+            </tr>
+
+            <TableEmpty
+                v-if="!loading && customers.data.length === 0"
+                :colspan="7"
+            />
+
+            <template #pagination>
+                <Pagination :links="customers.links" />
+            </template>
+        </DataTable>
 
         <!-- MODAL -->
-        <div
-            v-if="showModal"
-            class="modal fade show"
-            style="display: block; background: rgba(0, 0, 0, 0.5)"
+        <Modal
+            :show="showModal"
+            :title="isEdit ? 'Edit Customer' : 'Tambah Customer'"
+            @close="closeModal"
         >
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5>
-                            {{ isEdit ? "Edit Customer" : "Tambah Customer" }}
-                        </h5>
-                        <button class="close" @click="showModal = false">
-                            &times;
-                        </button>
-                    </div>
+            <div class="flex flex-col gap-4 p-6">
+                <FormInput
+                    label="Code"
+                    v-model="form.code"
+                    :error="form.errors.code"
+                    :disabled="isEdit"
+                />
 
-                    <div class="modal-body">
-                        <div class="form-row">
-                            <div class="form-group col">
-                                <label>Kode</label>
-                                <input
-                                    class="form-control"
-                                    v-model="form.code"
-                                    :disabled="isEdit"
-                                />
-                            </div>
+                <FormInput
+                    label="Customer Name"
+                    v-model="form.name"
+                    :error="form.errors.name"
+                />
 
-                            <div class="form-group col">
-                                <label>Nama</label>
-                                <input
-                                    class="form-control"
-                                    v-model="form.name"
-                                />
-                            </div>
-                        </div>
+                <FormSelect
+                    label="Customer Category"
+                    v-model="form.customer_category_id"
+                    :options="categoryOptions"
+                    :error="form.errors.customer_category_id"
+                />
 
-                        <div class="form-row">
-                            <div class="form-group col">
-                                <label>Kategori</label>
-                                <select
-                                    v-model="form.customer_category_id"
-                                    class="form-control"
-                                >
-                                    <option value="">- pilih -</option>
-                                    <option
-                                        v-for="c in categories"
-                                        :key="c.id"
-                                        :value="c.id"
-                                    >
-                                        {{ c.name }}
-                                    </option>
-                                </select>
-                            </div>
+                <FormSelect
+                    label="Sales Area"
+                    v-model="form.sales_area_id"
+                    :options="areaOptions"
+                    :error="form.errors.sales_area_id"
+                />
 
-                            <div class="form-group col">
-                                <label>Lokasi</label>
-                                <select
-                                    v-model="form.location_id"
-                                    class="form-control"
-                                >
-                                    <option value="">- pilih -</option>
-                                    <option
-                                        v-for="l in locations"
-                                        :key="l.id"
-                                        :value="l.id"
-                                    >
-                                        {{ l.name }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
+                <FormInput
+                    label="Phone"
+                    v-model="form.phone"
+                    :error="form.errors.phone"
+                />
 
-                        <div class="form-group">
-                            <label>Alamat</label>
-                            <textarea
-                                class="form-control"
-                                v-model="form.address"
-                            ></textarea>
-                        </div>
-                    </div>
+                <FormInput
+                    label="Email"
+                    v-model="form.email"
+                    :error="form.errors.email"
+                />
 
-                    <div class="modal-footer">
-                        <button
-                            class="btn btn-secondary"
-                            @click="showModal = false"
-                        >
-                            Batal
-                        </button>
-                        <button class="btn btn-primary" @click="submit">
-                            Simpan
-                        </button>
-                    </div>
-                </div>
+                <FormInput
+                    label="PIC Name"
+                    v-model="form.pic_name"
+                    :error="form.errors.pic_name"
+                />
+
+                <FormInput
+                    label="NPWP"
+                    v-model="form.tax_number"
+                    :error="form.errors.tax_number"
+                />
+
+                <FormSelect
+                    label="Payment Term"
+                    v-model="form.payment_term_id"
+                    :options="paymentTermOptions"
+                    :error="form.errors.payment_term_id"
+                />
+
+                <FormInput
+                    label="Credit Limit"
+                    type="number"
+                    v-model="form.credit_limit"
+                    :error="form.errors.credit_limit"
+                />
+
+                <FormTextarea
+                    label="Address"
+                    v-model="form.address"
+                    :error="form.errors.address"
+                />
+
+                <FormCheckbox label="Active" v-model="form.is_active" />
             </div>
-        </div>
+
+            <template #footer>
+                <div class="flex items-center justify-end gap-3 p-6">
+                    <button
+                        @click="closeModal"
+                        class="px-4 py-2 text-black dark:text-white"
+                    >
+                        Cancel
+                    </button>
+
+                    <PrimaryButton @click="submit" :disabled="loading">
+                        {{ loading ? "Saving..." : "Simpan" }}
+                    </PrimaryButton>
+                </div>
+            </template>
+        </Modal>
+
+        <ConfirmModal
+            :show="showDeleteModal"
+            @close="closeDeleteModal"
+            @confirm="confirmDelete"
+        />
     </AppLayout>
 </template>

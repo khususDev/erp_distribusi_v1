@@ -14,11 +14,9 @@ const sizeClasses = {
 </script>
 
 <template>
-    <!-- Ditambahkan type="button" agar tidak tidak sengaja men-submit form -->
     <button
-        type="button"
         :class="[
-            'inline-flex items-center justify-center rounded-md bg-primary font-medium text-white hover:bg-opacity-90',
+            'inline-flex items-center justify-center rounded-md bg-warning font-medium text-white hover:bg-opacity-90',
             sizeClasses[props.size],
         ]"
     >

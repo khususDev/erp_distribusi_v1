@@ -5,7 +5,8 @@ import PrimaryButton from "@/Components/Button/PrimaryButton.vue";
 
 import ProductForm from "./Partials/ProductForm.vue";
 
-import { useForm } from "@inertiajs/vue3";
+import { useForm, router } from "@inertiajs/vue3";
+import SecondaryButton from "@/Components/Button/SecondaryButton.vue";
 
 const props = defineProps({
     categories: Array,
@@ -40,17 +41,15 @@ const form = useForm({
 
     description: "",
 
-    product_uoms: [
-        {
-            uom_id: "",
-            conversion_rate: 1,
-            is_base: true,
-        },
-    ],
+    product_uoms: [],
 });
 
 const submit = () => {
     form.post("/mst_inv_product");
+};
+
+const cancel = () => {
+    router.get("/mst_inv_product");
 };
 </script>
 
@@ -73,6 +72,7 @@ const submit = () => {
             />
 
             <div class="mt-6 flex justify-end gap-3">
+                <SecondaryButton @click="cancel"> Cancel </SecondaryButton>
                 <PrimaryButton @click="submit"> Save Product </PrimaryButton>
             </div>
         </div>

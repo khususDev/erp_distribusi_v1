@@ -6,6 +6,7 @@ use App\Models\Master\Finance\Tax;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Vinkla\Hashids\Facades\Hashids;
+use App\Models\Master\Inventory\ProductUom;
 
 class Product extends Model
 {

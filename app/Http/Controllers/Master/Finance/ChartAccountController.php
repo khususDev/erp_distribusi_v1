@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Master\Finance;
 
 use App\Http\Controllers\Controller;
-use App\Models\Master\Finance\PaymentMethod;
+use App\Models\Master\Finance\ChartAccount;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class PaymentMethodController extends Controller
+class ChartAccountController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,7 @@ class PaymentMethodController extends Controller
     {
         $entries = $request->entries ?? 10;
 
-        $paymentMethods = PaymentMethod::query()
+        $accounts = ChartAccount::with('parent')
 
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -29,11 +29,18 @@ class PaymentMethodController extends Controller
                 $query->where('is_active', $request->status);
             })
 
+            ->orderBy('code')
             ->paginate($entries)
             ->appends($request->query());
 
-        return Inertia::render('Master/Finance/PaymentMethod/Index', [
-            'paymentMethods' => $paymentMethods,
+        return Inertia::render('Master/Finance/ChartAccount/Index', [
+            'accounts' => $accounts,
+
+            'parentAccounts' => ChartAccount::active()
+                ->where('is_header', true)
+                ->select('id', 'code', 'name')
+                ->orderBy('code')
+                ->get(),
 
             'filters' => [
                 'search' => $request->search,
@@ -57,13 +64,14 @@ class PaymentMethodController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|unique:mst_finance_payment_method,code',
+            'code' => 'required|unique:mst_finance_chart_account,code',
             'name' => 'required',
+            'type' => 'required',
         ]);
 
-        PaymentMethod::create($request->all());
+        ChartAccount::create($request->all());
 
-        return back()->with('success', 'Payment Method berhasil ditambahkan');
+        return back()->with('success', 'COA berhasil ditambahkan');
     }
 
     /**
@@ -85,27 +93,29 @@ class PaymentMethodController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, PaymentMethod $paymentMethod)
+    public function update(Request $request, ChartAccount $chart_account)
     {
+
         $request->validate([
-            'code' => 'required|unique:mst_finance_payment_method,code,' . $paymentMethod->id,
+            'code' => 'required|unique:mst_finance_chart_account,code,' . $chart_account->id,
             'name' => 'required',
+            'type' => 'required',
         ]);
 
-        $paymentMethod->update($request->all());
+        $chart_account->update($request->all());
 
-        return back()->with('success', 'Payment Method berhasil diperbarui');
+        return back()->with('success', 'COA berhasil diperbarui');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PaymentMethod $paymentMethod)
+    public function destroy(ChartAccount $chart_account)
     {
-        $paymentMethod->update([
+        $chart_account->update([
             'is_active' => false
         ]);
 
-        return back()->with('success', 'Payment Method berhasil dihapus');
+        return back()->with('success', 'COA berhasil dinonaktifkan');
     }
 }

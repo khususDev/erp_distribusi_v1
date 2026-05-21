@@ -66,14 +66,24 @@ class ProductController extends Controller
         $validated = $request->validate([
             'sku' => 'required|unique:mst_inventory_product,sku',
             'name' => 'required',
-
+            'barcode' => 'nullable|unique:mst_inventory_product,barcode',
             'category_id' => 'nullable|exists:mst_inventory_product_category,id',
             'brand_id' => 'nullable|exists:mst_inventory_brand,id',
             'uom_id' => 'nullable|exists:mst_inventory_uom,id',
             'tax_id' => 'nullable|exists:mst_finance_tax,id',
         ]);
 
-        Product::create($request->all());
+        $product = Product::create($request->all());
+
+        if ($request->product_uoms) {
+            foreach ($request->product_uoms as $uom) {
+                $product->productUoms()->create([
+                    'product_id' => $product->id,
+                    'uom_id' => $uom['uom_id'],
+                    'conversion_rate' => $uom['conversion_rate'],
+                ]);
+            }
+        }
 
         return redirect()
             ->route('mst_inv_product')
@@ -124,8 +134,9 @@ class ProductController extends Controller
         $product = Product::findOrFail($decoded[0]);
 
         $validated = $request->validate([
-            'sku' => 'required|unique:mst_inventory_product,sku,' . $product->id,
+            'sku' => 'required|unique:mst_inventory_product,sku' . ($product->id ? ',' . $product->id : ''),
             'name' => 'required',
+            'barcode' => 'nullable|unique:mst_inventory_product,barcode' . ($product->id ? ',' . $product->id : ''),
             'category_id' => 'nullable|exists:mst_inventory_product_category,id',
             'brand_id' => 'nullable|exists:mst_inventory_brand,id',
             'uom_id' => 'nullable|exists:mst_inventory_uom,id',

@@ -12,10 +12,34 @@ class CurrencyController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $entries = $request->entries ?? 10;
+
+        $currencies = Currency::query()
+
+            ->when($request->search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('code', 'like', "%{$search}%");
+                });
+            })
+
+            ->when($request->status !== null && $request->status !== '', function ($query) use ($request) {
+                $query->where('is_active', $request->status);
+            })
+
+            ->paginate($entries)
+            ->appends($request->query());
+
         return Inertia::render('Master/Finance/Currency/Index', [
-            'currencies' => Currency::orderBy('code')->get(),
+            'currencies' => $currencies,
+
+            'filters' => [
+                'search' => $request->search,
+                'entries' => $entries,
+                'status' => $request->status,
+            ],
         ]);
     }
 
@@ -33,7 +57,7 @@ class CurrencyController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'code' => 'required|unique:currency,code',
+            'code' => 'required|unique:mst_finance_currency,code',
             'name' => 'required',
             'symbol' => 'required',
         ]);
@@ -65,7 +89,7 @@ class CurrencyController extends Controller
     public function update(Request $request, Currency $currency)
     {
         $request->validate([
-            'code' => 'required|unique:mst_finance_currency,code',
+            'code' => 'required|unique:mst_finance_currency,code,' . $currency->id,
             'name' => 'required',
             'symbol' => 'required',
         ]);
@@ -80,7 +104,9 @@ class CurrencyController extends Controller
      */
     public function destroy(Currency $currency)
     {
-        $currency->delete();
+        $currency->update([
+            'is_active' => false
+        ]);
         return back()->with('success', 'Currency berhasil dihapus');
     }
 }

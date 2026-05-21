@@ -12,10 +12,35 @@ class CustomerCategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $entries = $request->entries ?? 10;
+
+        $customerCategories = CustomerCategory::query()
+
+            ->when($request->search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('code', 'like', "%{$search}%");
+                });
+            })
+
+            ->when($request->status !== null && $request->status !== '', function ($query) use ($request) {
+                $query->where('is_active', $request->status);
+            })
+
+            ->orderBy('name')
+            ->paginate($entries)
+            ->appends($request->query());
+
         return Inertia::render('Master/Sales/CustomerCategory/Index', [
-            'categories' => CustomerCategory::orderBy('name')->get(),
+            'customerCategories' => $customerCategories,
+
+            'filters' => [
+                'search' => $request->search,
+                'entries' => $entries,
+                'status' => $request->status,
+            ],
         ]);
     }
 
@@ -39,7 +64,7 @@ class CustomerCategoryController extends Controller
 
         CustomerCategory::create($request->all());
 
-        return back();
+        return back()->with('success', 'Customer Category berhasil ditambahkan');
     }
 
     /**
@@ -61,23 +86,37 @@ class CustomerCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, CustomerCategory $customerCategory)
+    public function update(Request $request, $id) // Ubah ke $id agar aman dari mismatch route binding
     {
+        // 1. Cari data berdasarkan ID terlebih dahulu
+        $customerCategory = CustomerCategory::findOrFail($id);
+
+        // 2. Gunakan ID yang ditemukan untuk pengecualian (validation rule unique)
         $request->validate([
+            'code' => 'required|unique:mst_sales_customer_category,code,' . $customerCategory->id,
             'name' => 'required',
         ]);
 
+        // 3. Update data
         $customerCategory->update($request->all());
 
-        return back();
+        return back()->with('success', 'Customer Category berhasil diperbarui');
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(CustomerCategory $customerCategory)
+    public function destroy($id) // Ubah ke $id
     {
-        $customerCategory->update(['is_active' => false]);
-        return back();
+        // 1. Cari data berdasarkan ID
+        $customerCategory = CustomerCategory::findOrFail($id);
+
+        // 2. Lakukan soft delete / nonaktifkan status
+        $customerCategory->update([
+            'is_active' => false
+        ]);
+
+        return back()->with('success', 'Customer Category berhasil dihapus');
     }
 }

@@ -117,7 +117,7 @@
    └── Monitoring
    ├── Outstanding PO
    ├── Supplier Delivery
-   └── AP Aging 5. INVENTORY
+   └── AP Aging
 
 5. INVENTORY
    Inventory
@@ -137,7 +137,7 @@
    │
    └── Reporting Tools
    ├── Stock Mutation
-   └── Inventory Valuation 6. ASSET MANAGEMENT
+   └── Inventory Valuation
 
 6. ASSET MANAGEMENT
    Asset Management
