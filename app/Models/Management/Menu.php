@@ -34,4 +34,9 @@ class Menu extends Model
             'menu_permission'
         );
     }
+
+    public function group()
+    {
+        return $this->belongsTo(MenuGroup::class, 'group_menu_id');
+    }
 }

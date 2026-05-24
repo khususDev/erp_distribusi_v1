@@ -63,7 +63,7 @@ watch(
                 :class="[
                     'relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden transition-all duration-300',
                     'bg-whiten dark:bg-boxdark-2', // Konsistensi background abu-abu muda
-                    isExpanded || isHovered ? 'lg:ml-[290px]' : 'lg:ml-[90px]',
+                    isExpanded || isHovered ? 'lg:ml-[250px]' : 'lg:ml-[80px]',
                 ]"
             >
                 <HeaderArea />

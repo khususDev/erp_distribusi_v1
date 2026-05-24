@@ -2,7 +2,6 @@
     <div
         class="rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark"
     >
-        <!-- LAYER 1: ACTION BUTTONS (Atas) -->
         <div
             class="border-b border-stroke px-4 py-4 md:px-6 xl:px-7.5 dark:border-strokedark"
         >
@@ -10,7 +9,6 @@
                 <div class="flex items-center gap-3">
                     <slot name="top-actions"></slot>
                 </div>
-                <!-- Filter & Search di Kanan -->
                 <div class="flex items-center gap-3">
                     <slot name="right-actions"></slot>
 
@@ -42,11 +40,9 @@
         </div>
 
         <div class="m-4 rounded-lg border border-stroke dark:border-strokedark">
-            <!-- LAYER 2: TABLE CONTROLS (Entries & Search) -->
             <div
                 class="flex flex-col gap-5 border-b border-stroke px-1 py-2 md:flex-row md:items-center md:justify-between md:px-2 dark:border-strokedark"
             >
-                <!-- Entries di Kiri -->
                 <div v-if="showEntries" class="flex items-center gap-3">
                     <span class="text-sm font-medium">Show</span>
                     <div class="relative z-20 inline-block">
@@ -64,11 +60,15 @@
                         >
                         </span>
                     </div>
-                    <!-- <span class="text-sm font-medium">entries</span> -->
                 </div>
             </div>
-            <div class="max-w-full border border-stroke dark:border-strokedark">
-                <table class="w-full table-auto text-sm text-center">
+
+            <div
+                class="max-w-full overflow-x-auto border border-stroke dark:border-strokedark"
+            >
+                <table
+                    class="w-full table-auto whitespace-nowrap text-sm text-center"
+                >
                     <thead>
                         <tr class="bg-gray-2 text-center dark:bg-meta-4">
                             <th
@@ -87,7 +87,6 @@
             </div>
         </div>
 
-        <!-- LAYER 4: PAGINATION -->
         <div
             v-if="showPagination"
             class="flex flex-col items-center justify-between gap-4 border-t border-stroke px-4 py-6 md:flex-row md:px-6 xl:px-7.5 dark:border-strokedark"

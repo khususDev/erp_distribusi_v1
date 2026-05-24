@@ -21,8 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Inertia::share([
-            'menus' => fn() => MenuService::sidebar(),
-        ]);
+        // Inertia::share([
+        //     'menus' => fn() => MenuService::sidebar(),
+        // ]);
     }
 }

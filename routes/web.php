@@ -19,9 +19,12 @@ use App\Http\Controllers\Master\Inventory\BrandController;
 use App\Http\Controllers\Master\Inventory\ProductController;
 use App\Http\Controllers\Master\Inventory\StorageController;
 use App\Http\Controllers\Master\Inventory\WarehouseController;
+use App\Http\Controllers\Master\Purchasing\SupplierCategoryController;
+use App\Http\Controllers\Master\Purchasing\SupplierController;
 use App\Http\Controllers\Master\Sales\AreaController;
 use App\Http\Controllers\Master\Sales\CustomerCategoryController;
 use App\Http\Controllers\Master\Sales\CustomerController;
+use App\Http\Controllers\Master\Sales\MappingAreaController;
 use App\Http\Controllers\Master\Sales\SalesmanAreaController;
 use App\Http\Controllers\Master\Sales\SalesmanController;
 use App\Http\Controllers\ProfileController;
@@ -159,10 +162,20 @@ Route::middleware(['auth', 'menu.permission'])->group(function () {
     Route::put('/mst_sls_area/{area}', [AreaController::class, 'update']);
     Route::delete('/mst_sls_area/{area}', [AreaController::class, 'destroy']);
 
-    Route::get('/mst_sls_salesman_area', [SalesmanAreaController::class, 'index'])->name('mst_sls_salesman_area');
-    Route::post('/mst_sls_salesman_area', [SalesmanAreaController::class, 'store']);
-    Route::put('/mst_sls_salesman_area/{salesmanArea}', [SalesmanAreaController::class, 'update']);
-    Route::delete('/mst_sls_salesman_area/{salesmanArea}', [SalesmanAreaController::class, 'destroy']);
+    Route::get('/mst_sls_mapping_area', [MappingAreaController::class, 'index'])->name('mst_sls_mapping_area');
+    Route::post('/mst_sls_mapping_area', [MappingAreaController::class, 'store']);
+    Route::put('/mst_sls_mapping_area/{mappingArea}', [MappingAreaController::class, 'update']);
+    Route::delete('/mst_sls_mapping_area/{mappingArea}', [MappingAreaController::class, 'destroy']);
+
+    Route::get('/mst_prc_supplier_category', [SupplierCategoryController::class, 'index'])->name('mst_prc_supplier_category');
+    Route::post('/mst_prc_supplier_category', [SupplierCategoryController::class, 'store']);
+    Route::put('/mst_prc_supplier_category/{supplierCategory}', [SupplierCategoryController::class, 'update']);
+    Route::delete('/mst_prc_supplier_category/{supplierCategory}', [SupplierCategoryController::class, 'destroy']);
+
+    Route::get('/mst_prc_supplier', [SupplierController::class, 'index'])->name('mst_prc_supplier');
+    Route::post('/mst_prc_supplier', [SupplierController::class, 'store']);
+    Route::put('/mst_prc_supplier/{supplier}', [SupplierController::class, 'update']);
+    Route::delete('/mst_prc_supplier/{supplier}', [SupplierController::class, 'destroy']);
 
     Route::get('/mng_user', [UserController::class, 'index'])->name('mng_user');
 

@@ -38,12 +38,12 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            // Tambahkan ini agar flash message dari Controller sampai ke Vue
             'flash' => [
                 'success' => fn() => $request->session()->get('success'),
                 'error' => fn() => $request->session()->get('error'),
             ],
 
+            // UPDATE BAGIAN INI
             'menus' => function () use ($request) {
                 $user = $request->user();
 
@@ -51,24 +51,34 @@ class HandleInertiaRequests extends Middleware
                     return [];
                 }
 
-                return Menu::whereNull('parent_id')
-                    ->where('is_active', 1)
-                    ->whereHas(
-                        'users',
-                        fn($q) =>
-                        $q->where('users.id', $user->id)
-                    )
-                    ->with(['children' => function ($q) use ($user) {
-                        $q->where('is_active', 1)
-                            ->whereHas(
-                                'users',
-                                fn($q) =>
-                                $q->where('users.id', $user->id)
-                            )
+                // 1. Ambil MenuGroup yang aktif
+                $groups = \App\Models\Management\MenuGroup::where('status', 1)
+                    ->orderBy('no_urut')
+                    ->with(['menus' => function ($query) use ($user) {
+                        // 2. Ambil Menu utama yang diizinkan untuk user ini
+                        $query->where('is_active', 1)
+                            ->whereHas('users', fn($q) => $q->where('users.id', $user->id))
+                            ->with(['children' => function ($q) use ($user) {
+                                // 3. Ambil Sub-menu yang diizinkan untuk user ini
+                                $q->where('is_active', 1)
+                                    ->whereHas('users', fn($q) => $q->where('users.id', $user->id))
+                                    ->orderBy('order');
+                            }])
                             ->orderBy('order');
                     }])
-                    ->orderBy('order')
                     ->get();
+
+                // 4. Format outputnya agar sesuai dengan yang diharapkan Vue,
+                // dan buang grup yang tidak memiliki menu (kosong karena filter permission)
+                return $groups->map(function ($group) {
+                    return [
+                        'id' => $group->id,
+                        'group_name' => $group->name,
+                        'menus' => $group->menus,
+                    ];
+                })->filter(function ($group) {
+                    return count($group['menus']) > 0; // Sembunyikan grup jika menunya 0
+                })->values();
             },
         ];
     }
